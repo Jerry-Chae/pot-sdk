@@ -1,0 +1,13 @@
+- WebServiceHost: https://api-rpa-fedora.argos-labs.com/manager
+  FileServiceHost: https://api-rpa-fedora.argos-labs.com/manager
+  ImageServiceHost: api.rpa-fedora.argos-labs.com:8080
+  OnDemandResultWebServer: rpa-fedora.argos-labs.com
+  LoginPageHost: https://rpa-fedora.argos-labs.com/clear.html
+  UpdateUrl: https://rpa-fedora.argos-labs.com/data/binary/patch/stu/SS.yaml
+  HostAlias: RPA
+  oauthHost: https://api-rpa-fedora.argos-labs.com/oauth2
+  alabsPpmHost: https://plugin-rpa-fedora.argos-labs.com/pypi
+  TessdataUrl: https://rpa-fedora.argos-labs.com/data/binary/tessdata
+  SocketIoHost: https://api-rpa-fedora.argos-labs.com.com/io-rpa/
+  ScenarioImageHost: https://api-rpa-fedora.argos-labs.com/manager
+  ErrorReportHost: https://api-rpa-fedora.argos-labs.com.com/api

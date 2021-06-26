@@ -1,0 +1,7 @@
+---
+merge_icons:
+#  - name: "font-awesome"  # Why Error???
+  - name: "american-sign-language-interpreting"
+    color: "#6a76f6"
+    size: 30
+    localte: center

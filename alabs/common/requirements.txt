@@ -1,0 +1,4 @@
+# pip dependent packages
+
+PyYAML>=3.13
+requests>=2.21.0

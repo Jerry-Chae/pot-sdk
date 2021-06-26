@@ -1,0 +1,49 @@
+---
+environment:
+  virtualenv:
+    py3: 'C:\Python37-32\python.exe'
+    dir: '{{home}}\autotest.venv'
+  statdir: '{{home}}\autotest.stat'
+  log: '{{home}}\autotest.log'
+  report: email
+
+report:
+  email:
+    plugin: argoslabs.office.emailsend
+    server: imap.gmail.com
+    user: plugin@argos-labs.com
+    passwd: teehjthjseblwjqt
+    subject: Automatic Plugin Test
+    to:
+      - plugin@argos-labs.com
+#      - staff@argos-labs.com
+
+tests:
+  - plugin: argoslabs.google.translate
+    name: Google Translate - detect op
+    version:
+    cmd:
+      - argoslabs.google.translate
+      - こんにちは世界？私はTTSです?
+      - --detect
+    assert_true: stdout == 'lang, confidence\r\nja, N/A\r\n'
+  - plugin: argoslabs.google.translate
+    name: Google Translate - translate op
+    version:
+    cmd:
+      - argoslabs.google.translate
+      - こんにちは世界？私はTTSです?
+      - --dest
+      - English
+    assert_true: stdout.find('Hello World?') >= 0
+
+  - plugin: argoslabs.api.rest
+    name: REST API - get
+    version:
+    cmd:
+      - argoslabs.api.rest
+      - get
+      - https://reqres.in/api/unknown/2
+    # 만약 stdout_json이 true이면 stdout를 js dict에 json.load
+    stdout_json: true
+    assert_true: js['data']['id'] == 2 and js['data']['year'] == 2001

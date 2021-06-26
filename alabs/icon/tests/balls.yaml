@@ -1,0 +1,16 @@
+---
+merge_icons:
+  - name: futbol
+    color: "#A0A0B0"
+    size: 20
+    localte: center
+    offset:
+      x: -6
+      y: -6
+  - name: basketball-ball
+    color: "#6a76f6"
+    size: 20
+    localte: center
+    offset:
+      x: 6
+      y: 6

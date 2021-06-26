@@ -1,0 +1,11 @@
+gevent
+flask
+flask-restplus 
+PyYaml 
+chardet 
+requests 
+requirements-parser 
+bs4 
+pyautogui 
+pyscreenshot 
+opencv-python 

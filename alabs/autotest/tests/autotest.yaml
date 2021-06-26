@@ -1,0 +1,103 @@
+---
+environment:
+  virtualenv:
+    py3: 'C:\Python37-32\python.exe'
+    dir: '{{home}}\autotest.venv'
+  statdir: '{{home}}\autotest.stat'
+  log: '{{home}}\autotest.log'
+  report: email
+
+report:
+  email:
+    plugin: argoslabs.office.emailsend
+    server: imap.gmail.com
+    user: plugin@argos-labs.com
+    passwd: teehjthjseblwjqt
+    subject: Automatic Plugin Test
+    to:
+      - plugin@argos-labs.com
+#      - staff@argos-labs.com
+
+tests:
+  - plugin: argoslabs.google.vision
+    name: Google Vision API - OCR op
+    version:
+    cmd:
+      - argoslabs.google.vision
+      - data/vision-4ca68bb81fbf.json
+      - OCR
+      - data/text-01.png
+#      - --output-image
+#      - data/text-01.out.png
+    assert_true: stdout.endswith('to The Economist')
+  - plugin: argoslabs.google.vision
+    name: Google Vision API - OCR op for fulltext
+    version:
+    cmd:
+      - argoslabs.google.vision
+      - data/vision-4ca68bb81fbf.json
+      - OCR
+      - data/full-text-03.jpg
+    assert_true: stdout.startswith('No.1133\r\n学生氏名')
+  - plugin: argoslabs.google.vision
+    name: Google Vision API - Face op
+    version:
+    cmd:
+      - argoslabs.google.vision
+      - data/vision-4ca68bb81fbf.json
+      - Face
+      - data/faces-01.jpg
+#      - --output-image
+#      - data/faces-01.out.jpg
+    assert_true: stdout == '2'
+  - plugin: argoslabs.google.vision
+    name: Google Vision API - Label op
+    version:
+    cmd:
+      - argoslabs.google.vision
+      - data/vision-4ca68bb81fbf.json
+      - Label
+      - data/label-01.jpg
+    assert_true: stdout.find('Dog') > 0
+  - plugin: argoslabs.google.vision
+    name: Google Vision API - Landmark op
+    version:
+    cmd:
+      - argoslabs.google.vision
+      - data/vision-4ca68bb81fbf.json
+      - Landmark
+      - data/landmark-01.jpg
+#      - --output-image
+#      - data/landmark-01.out.jpg
+    assert_true: stdout.find('Eiffel Tower') > 0
+  - plugin: argoslabs.google.vision
+    name: Google Vision API - Logo op
+    version:
+    cmd:
+      - argoslabs.google.vision
+      - data/vision-4ca68bb81fbf.json
+      - Logo
+      - data/logo-01.jpg
+#      - --output-image
+#      - data/logo-01.out.jpg
+    assert_true: stdout.find('Google') > 0
+  - plugin: argoslabs.google.vision
+    name: Google Vision API - 'Localized Object' op
+    version:
+    cmd:
+      - argoslabs.google.vision
+      - data/vision-4ca68bb81fbf.json
+      - Localized Object
+      - data/local-01.png
+#      - --output-image
+#      - data/local-01.out.png
+    assert_true: stdout.find('Food') > 0
+  - plugin: argoslabs.google.vision
+    name: Google Vision API - 'Dominant Colors' op
+    version:
+    cmd:
+      - argoslabs.google.vision
+      - data/vision-4ca68bb81fbf.json
+      - Dominant Colors
+      - data/property-01.jpg
+    assert_true: stdout.find('0.01451832801103592') > 0

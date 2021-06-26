@@ -1,0 +1,112 @@
+display_name,plugin_name,active_bot,access_count
+Binary Op no version 443,argoslabs.data.binaryop,443,2008
+TimeStamp no version 267,argoslabs.time.getts,267,1608
+Regular Expression no version 313,argoslabs.string.re,313,1324
+SQL no version 82,argoslabs.data.rdb,82,1227
+Excel Advanced no version 405,argoslabs.data.excel,405,1117
+LINE Notify no version 25,argoslabs.sns.line,25,970
+File/Folder Op no version 308,argoslabs.filesystem.op,308,827
+Excel AdvII no version 32,argoslabs.data.exceladv2,32,629
+File Monitor no version 202,argoslabs.filesystem.monitor,202,541
+Convert CharSet no version 7,argoslabs.file.encoding,7,380
+Env Var no version 195,argoslabs.system.envvar,195,377
+PowerShell no version 216,argoslabs.windows.powershell,216,324
+Google Sheets no version 10,argoslabs.google.googlesheet,10,324
+Google Drive no version 2,argoslabs.google.googledrive,2,318
+Speed Test no version 11,argoslabs.check.netspeed,11,318
+Env Check no version 12,argoslabs.check.env,12,318
+Window Op no version 7,argoslabs.argos_service_jp.window_op,7,309
+Adv Email Send no version 49,argoslabs.office.emailsend,49,220
+REST API no version 20,argoslabs.api.rest,20,213
+API Requests no version 30,argoslabs.api.requests,30,209
+Attach Image no version 29,argoslabs.file.addimg,29,202
+AD/LDAP no version 29,argoslabs.aaa.ldap,29,202
+Web Extract no version 21,argoslabs.web.bsoup,21,176
+Email Read/Mon no version 13,argoslabs.office.emailread,13,81
+Html Extract no version 5,argoslabs.web.savehtml,5,60
+Excel AdvIII no version 15,argoslabs.data.exceladv3,15,38
+Sub Folder Trav no version 26,argoslabs.filesystem.subfolder,26,27
+PDF SplitMerge no version 1,argoslabs.data.splitpdf,1,23
+Clipboard no version 219,argoslabs.system.clipboard,219,19
+Create Newfile no version 142,argoslabs.argos_service_jp.create_newfile,142,15
+Bot Collabo no version 4,argoslabs.comm.redis,4,14
+Chatwork Notification no version 2,argoslabs.argos_service_jp.chatwork_notification,2,14
+Excel Copy Format no version 3,argoslabs.data.excelcopy,3,9
+CSV2TSV no version 34,argoslabs.data.fileconv,34,8
+Csv2xlsx no version 36,argoslabs.data.csv2excel,36,8
+JSON Select no version 8,argoslabs.data.json,8,7
+Detect CharSet no version 2,argoslabs.file.chardet,2,6
+UnKnown Plugin,argoslabs.demo.run_python_script,9,5
+PDF Miner no version 4,argoslabs.pdf.miner,4,5
+PANDAS I no version 14,argoslabs.datanalysis.pandasbasic,14,5
+Work Calendar no version 8,argoslabs.time.workalendar,8,1
+Excel Formula no version 2,argoslabs.data.excelformula,2,1
+UnKnown Plugin,argoslabs.ai.translate,10,0
+UnKnown Plugin,argoslabs.ai.tts,8,0
+Python Selenium no version 0,argoslabs.web.selenium,0,0
+Scrapy Basic no version 0,argoslabs.web.scrapy,0,0
+HTML Table no version 0,argoslabs.web.bsoup_table,0,0
+SSH Command no version 6,argoslabs.terminal.sshexp,6,0
+SSH Copy no version 0,argoslabs.terminal.scp,0,0
+Sys Info no version 0,argoslabs.system.psutil,0,0
+Modex API no version 0,argoslabs.system.modex,0,0
+Password Generator no version 3,argoslabs.string.passwdgen,3,0
+Telegram no version 1,argoslabs.sns.telegram,1,0
+Slack no version 1,argoslabs.sns.slack,1,0
+Simple-SFDC no version 0,argoslabs.sfdc.simple_salesforce,0,0
+Newuser-SFDC no version 0,argoslabs.sfdc.newuser,0,0
+Dynamic Python no version 0,argoslabs.python.dynamic,0,0
+MS Word Extract no version 0,argoslabs.office.docxextract,0,0
+Xtracta Tracking no version 0,argoslabs.ocr.xtractatrack,0,0
+Xtracta Get Doc no version 0,argoslabs.ocr.xtractagetdoc,0,0
+Xtracta Upload no version 0,argoslabs.ocr.xtracta,0,0
+Tesseract no version 1,argoslabs.ocr.tesseract,1,0
+NAVER OCR no version 1,argoslabs.naver.ocr,1,0
+MS Azure Text Analytics no version 1,argoslabs.msazure.text,1,0
+Dialog Warning no version 0,argoslabs.interactive.zenity_warning,0,0
+Dialog Text Info no version 0,argoslabs.interactive.zenity_text_info,0,0
+Dialog Question no version 0,argoslabs.interactive.zenity_question,0,0
+Dialog Password no version 0,argoslabs.interactive.zenity_pwd,0,0
+Dialog Info no version 0,argoslabs.interactive.zenity_info,0,0
+Dialog Forms no version 0,argoslabs.interactive.zenity_forms,0,0
+Dialog File Selection no version 0,argoslabs.interactive.zenity_file_select,0,0
+Dialog Error no version 0,argoslabs.interactive.zenity_error,0,0
+Dialog Text Entry no version 0,argoslabs.interactive.zenity_entry,0,0
+Dialog Calendar no version 0,argoslabs.interactive.zenity,0,0
+Drag and Drop no version 14,argoslabs.interactive.dragdrop,14,0
+Visual Recognition no version 0,argoslabs.ibm.visualrecog,0,0
+IBM Speech to Text no version 1,argoslabs.ibm.stt,1,0
+Google Vision API no version 11,argoslabs.google.vision,11,0
+Google TTS no version 5,argoslabs.google.tts,5,0
+Google Translate no version 3,argoslabs.google.translate,3,0
+Google Token no version 0,argoslabs.google.googletoken,0,0
+Google Search API no version 1,argoslabs.google.googlesearch,1,0
+Google Calandar no version 0,argoslabs.google.googlecalendar,0,0
+File Stat no version 1,argoslabs.filesystem.stat,1,0
+File/Folder Exists no version 0,argoslabs.filesystem.exists,0,0
+File Append no version 0,argoslabs.filesystem.append,0,0
+Zip/Unzip no version 3,argoslabs.file.zipunzip,3,0
+Screen Snipping no version 0,argoslabs.file.snippingtool,0,0
+Convert Image no version 0,argoslabs.file.imgconv,0,0
+Regression no version 0,argoslabs.datanalysis.regression,0,0
+pandas profiling no version 7,argoslabs.datanalysis.pandasprofiling,7,0
+pandas III no version 2,argoslabs.datanalysis.pandas3,2,0
+pandas II no version 3,argoslabs.datanalysis.pandas2,3,0
+XML Extract no version 0,argoslabs.data.xmlextract,0,0
+PDF2Doc no version 0,argoslabs.data.pdf2doc,0,0
+MongoDB no version 0,argoslabs.data.mongodb,0,0
+Excel Macro no version 20,argoslabs.data.excelmacro,20,0
+Codat API no version 0,argoslabs.codat.invoice,0,0
+Is Svc Open no version 1,argoslabs.check.svcopen,1,0
+AWS Textra/Rekog no version 1,argoslabs.aws.textract,1,0
+Text Write no version 0,argoslabs.argos_service_jp.text_write,0,0
+Text Read no version 2,argoslabs.argos_service_jp.text_read,2,0
+QR Read no version 0,argoslabs.argos_service_jp.qr_read,0,0
+QR Generate no version 0,argoslabs.argos_service_jp.qr_generate,0,0
+Print 2 Image no version 0,argoslabs.argos_service_jp.print2image,0,0
+parsehub no version 0,argoslabs.argos_service_jp.parsehub_api,0,0
+JSON<->CSV no version 0,argoslabs.argos_service_jp.json_csv,0,0
+Excel Newfile no version 2,argoslabs.argos_service_jp.excel_newfile,2,0
+Convert Image II no version 0,argoslabs.argos_service_jp.convert_image_2,0,0
+Rossum no version 5,argoslabs.api.rossum,5,0
+mimi AI no version 0,argoslabs.ai.mimi,0,0

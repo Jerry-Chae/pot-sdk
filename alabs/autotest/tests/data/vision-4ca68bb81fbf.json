@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "vision-252000",
+  "private_key_id": "4ca68bb81fbf05ab84e980d6b67fd95fe3ed14bc",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCI86E+dH1pTnGf\nyU6KudqpUsrp4ZBBpF/MpjiSq+f/MGmOaaKqiP+jzSXFzC6t9Is/Rd+u8GESvNHS\npY1A+hiHY4YwNS9P3/125/+XmXZveWeiVlXpNzduBxrlPtXs2ri9s1Gz9ouHrSd8\nHMo5RnqOxPUQZpKTEzIv8k+ySjZS/kp108ZWYyoF1ezV1x8bErPou8c/6HDQTeD2\nYdQhL+evcKvZI70BYXEp/S2xj0b72o/pcj/Tkibpu45XpkSuJ2b3ws6Ff3XBvtdF\nCzqUw5zT9+r6+7/8+1tImx/kBZ3DCPx46r3z+PvoTrcd8bTqwFvDSuu8w2cUJJn0\nahiMln81AgMBAAECggEADExekkJ5QaPo+bmk6znJ7FMyRCL8ppxpevIBWhCEbqrt\nC7wqPqi7Vj0Vs4fEuFvhxk6Syf2tpfZdXE6AGxHqcnwKQJmCFGjvtMYcMoO2Okf7\neb1JjT4nZOLP9D66jMDOfsCT6XaOLKKszU0zjsWou1nuDOk9J+Z9JweaRw85hiXM\nrj1VjVNKRRzXPxT0+jNm2pYIKWC3x6yyDkrUSA+xF9zG1AIaQ4gEhbV2uPUe0soB\nuSuQ5BlOJdZOHsbiW9VMJgCKK7kqwN+UrAhaPLbi84zGrBqUKz0Wev3kbmedAuyH\nLnkFIYb5nGcq3vpnOgdPoZVUtC9CnfQej7n6Xc6BWQKBgQC8RjQosA8RkNGBaaWx\n9Jc1sjZAD90g4Tn0GxNdGKfz1TNx43TvxmJyFtv78bP8fHi140VRHi4JwNnBKzlg\n2lV254dVX//sa5GDXmyohPjlOkMJ81TQhLq68eVnieW4udrDkTl8sFxSNCW6rCS/\nGBsTfAblfKPeG8F1b5mbS/rBaQKBgQC6Nzwv6CCAiBu66KT/4AJTSpGLbsY9kkDA\nWOcb8PHzrRfiraQtGzrZHMPkk1Tu9XHbzMQ9VgBDWGJwgdLgmVywKW56ibF+35tu\neTr1PEvhBlLQDIYdYSpQGiTDtABnxOsvt0fU5W7Uxcwrg7iSfy5cdJfHgMvXbrFw\nfusr7ibJ7QKBgQCCo+gfb4MVOjrVpJwv7jtaLA3Ox/M1lHLlOkBmcexgmki3NxB2\nLF81MT12BhJRGYGdHFWF4v4pEGNI0Zhf50A0YJWcnR91SnLPCB83lAUs8g+AgRMS\nGXeErsLy5FG9q2DsIQIVzj5RYBPqAvcAjlaDX6Vdae4++V11AnpAsykNOQKBgAlO\n8YdDhzxlkV1Ke9T+kZ8wPw5FP0ucn/f9ea//31ha8rK2E1rd3Zc0xOYMJ1a6ljJy\njeyy+9hh9qnBE5V+lQ+JQqiFcYXyD4b6MGRJ21EoS8NynNGjJcZTSDswKEUHpun/\ns2uE/IFOUeJq9zL7gInGmj+yxH3EXsJM1dygTvgRAoGBAIv0UDr4r3l+U2/rQAvS\nlI6oB8dp6jANwrVv418bCIAGD8VXOHC5M9n1g4nskDmPiCsjfD5lKNBVm3pqC5wm\nIJKVvGDFlAuJxlbq3ASYpiULO70PuYD3lzkHRP7j3IQPiSV/ZKEZWcdQTVKvSmXe\nBw2QqWTQXp191yFT2ENgOCRl\n-----END PRIVATE KEY-----\n",
+  "client_email": "argos-google-vision-plugin-tes@vision-252000.iam.gserviceaccount.com",
+  "client_id": "109380578228869597228",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/argos-google-vision-plugin-tes%40vision-252000.iam.gserviceaccount.com"
+}

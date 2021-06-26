@@ -1,0 +1,21 @@
+# pip dependent packages
+
+#alabs.common
+
+# needed
+wheel
+
+# default for alabs.ppm
+idna==2.7
+PyYAML
+requests
+requirements-parser
+beautifulsoup4
+
+# for installer STU & PAM pakcaging
+PyInstaller
+#pypiwin32
+
+# for pyinstaller
+six
+packaging

@@ -1,0 +1,17 @@
+# util
+alabs.common
+
+# for selenium
+# in case of msedge-selenium-tools
+# selenium==3.141
+selenium
+
+# for util
+requests
+xlrd==1.2.0
+
+# for BeautifulSoup
+beautifulsoup4
+
+# for MS Edge Options
+msedge-selenium-tools

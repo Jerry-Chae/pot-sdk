@@ -1,0 +1,33 @@
+setup:
+  author: Jerry Chae
+  author_email: mcchae@argos-labs.com
+  classifiers:
+  - 'Operating System :: MacOS :: MacOS X'
+  - 'Operating System :: Microsoft :: Windows :: Windows 10'
+  - 'Operating System :: POSIX :: Linux'
+  - 'License :: Other/Proprietary License'
+  - 'Natural Language :: English'
+  - 'Programming Language :: Python :: 3.7'
+  - 'Topic :: Utilities'
+  - 'Topic :: Change :: Log :: Unittest for Mac'
+  - 'Topic :: Change :: Log :: Unittest for Linux'
+  - 'Topic :: Change :: Log :: Unittest for Windows'
+  - 'Topic :: Change :: Log :: Add input_group, input_method for plugin argument input attributes'
+  - 'Topic :: Change :: Log :: Add Manifest'
+  description: ARGOS-LABS Module Manager
+  keywords:
+  - rpa
+  - robot
+  - module
+  - manager
+  license: ARGOS-LABS Proprietary License
+  platforms:
+  - Mac
+  - Windows
+  - Linux
+  package_data:
+    alabs.ppm: ['icon.*', 'setup.yaml']
+  url: https://www.argos-labs.com
+  # do not start '0'
+#  version: 2.1021.1800
+  version: 3.325.2420

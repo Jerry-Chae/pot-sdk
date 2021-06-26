@@ -1,0 +1,343 @@
+display_name,plugin_name,version,active_bot,access_count
+TimeStamp,argoslabs.time.getts,2.412.1440,234,1608
+Arithmetic Op,argoslabs.data.binaryop,2.1102.1700,214,1288
+SQL,argoslabs.data.rdb,2.228.1800,75,1227
+String Manipulation,argoslabs.string.re,2.1104.1120,239,1008
+LINE Notify,argoslabs.sns.line,2.305.1802,25,970
+Excel Advanced,argoslabs.data.excel,2.819.1524,207,940
+Excel AdvII,argoslabs.data.exceladv2,2.908.1000,22,627
+File/Folder Op,argoslabs.filesystem.op,2.1217.929,27,625
+Arithmetic Op,argoslabs.data.binaryop,1.1016.1047,129,430
+Convert CharSet,argoslabs.file.encoding,2.326.2130,7,380
+Env Var,argoslabs.system.envvar,2.715.1307,195,377
+Folder Monitor,argoslabs.filesystem.monitor,2.1119.2235,45,356
+PowerShell,argoslabs.windows.powershell,2.906.2242,216,324
+Google Sheets,argoslabs.google.googlesheet,2.625.1700,10,324
+Google Drive,argoslabs.google.googledrive,2.624.2000,2,318
+Speed Test,argoslabs.check.netspeed,2.713.2500,11,318
+Env Check,argoslabs.check.env,2.715.2322,12,318
+Arithmetic Op,argoslabs.data.binaryop,3.114.918,68,290
+Window Op no version 3.108.1900,argoslabs.argos_service_jp.window_op,3.108.1900,2,290
+String Manipulation,argoslabs.string.re,2.805.1455,27,224
+API Requests,argoslabs.api.requests,2.1231.1439,30,209
+Adv Email Send,argoslabs.office.emailsend,2.1021.1500,37,202
+Attach Image,argoslabs.file.addimg,2.1007.1100,29,202
+AD/LDAP,argoslabs.aaa.ldap,1.1124.2100,29,202
+Web Extract,argoslabs.web.bsoup,2.529.1730,10,176
+REST API,argoslabs.api.rest,2.1215.144,3,176
+File Monitor,argoslabs.filesystem.monitor,2.904.1537,50,163
+Excel Advanced,argoslabs.data.excel,3.121.1930,42,108
+String Manipulation,argoslabs.string.re,1.1025.2216,39,92
+Email IMAP Read/Mon,argoslabs.office.emailread,2.430.132,1,81
+Html Extract,argoslabs.web.savehtml,2.813.1247,5,60
+File/Folder Op,argoslabs.filesystem.op,2.421.1600,3,55
+File/Folder Op no version ,argoslabs.filesystem.op,,2,40
+File/Folder Op,argoslabs.filesystem.op,2.826.1313,16,32
+File/Folder Op,argoslabs.filesystem.op,2.430.11,17,31
+File/Folder Op,argoslabs.filesystem.op,3.217.2413,14,30
+Excel AdvIII,argoslabs.data.exceladv3,2.1014.1300,8,28
+PDF SplitMerge,argoslabs.data.splitpdf,2.1211.900,1,23
+REST API,argoslabs.api.rest,2.1223.1730,5,23
+File Monitor,argoslabs.filesystem.monitor,2.417.1311,17,22
+Clipboard,argoslabs.system.clipboard,2.809.239,201,19
+Folder Structure,argoslabs.filesystem.subfolder,2.907.1109,3,18
+Excel Advanced no version 2.1014.1300,argoslabs.data.excel,2.1014.1300,2,16
+Window Op,argoslabs.argos_service_jp.window_op,3.119.1100,4,15
+Create Newfile,argoslabs.argos_service_jp.create_newfile,2.908.1040,140,15
+Bot Collabo,argoslabs.comm.redis,2.513.1600,4,14
+Chatwork Notification,argoslabs.argos_service_jp.chatwork_notification,2.909.1420,2,14
+REST API,argoslabs.api.rest,2.1223.3300,1,14
+Excel Advanced no version 2.908.1000,argoslabs.data.excel,2.908.1000,11,13
+Excel Advanced,argoslabs.data.excel,1.715.1257,30,13
+Excel Advanced,argoslabs.data.excel,2.202.1415,54,12
+Adv Email Send,argoslabs.office.emailsend,2.827.2233,8,11
+Excel Advanced,argoslabs.data.excel,2.814.1218,4,11
+File/Folder Op,argoslabs.filesystem.op,2.1125.1615,91,10
+Folder Structure,argoslabs.filesystem.subfolder,2.1006.1551,4,9
+Excel Copy Format,argoslabs.data.excelcopy,2.915.2200,2,9
+File Conv,argoslabs.data.fileconv,2.727.1730,2,8
+Csv2xlsx,argoslabs.data.csv2excel,2.925.1200,36,8
+Adv Email Send,argoslabs.office.emailsend,2.820.114,2,7
+JSON Select,argoslabs.data.json,3.122.1313,1,7
+Excel AdvIII,argoslabs.data.exceladv3,3.127.1000,2,7
+Detect CharSet,argoslabs.file.chardet,2.326.1130,2,6
+UnKnown Plugin,argoslabs.demo.run_python_script,20.12.35,8,5
+PDF Miner,argoslabs.pdf.miner,2.604.2100,4,5
+pandas I,argoslabs.datanalysis.pandasbasic,2.809.2300,8,5
+Window Op,argoslabs.argos_service_jp.window_op,3.217.1000,1,4
+File/Folder Op,argoslabs.filesystem.op,2.1112.1947,69,3
+Excel AdvIII,argoslabs.data.exceladv3,2.727.1000,2,2
+Excel AdvII,argoslabs.data.exceladv2,2.804.900,5,2
+Excel Advanced,argoslabs.data.excel,3.121.3300,2,2
+Work Calendar,argoslabs.time.workalendar,2.316.1013,5,1
+File/Folder Op,argoslabs.filesystem.op,2.423.850,6,1
+Excel Formula,argoslabs.data.excelformula,2.811.900,2,1
+Excel AdvIII,argoslabs.data.exceladv3,2.922.1500,1,1
+Excel Advanced no version 3.114.951,argoslabs.data.excel,3.114.951,23,1
+Excel Advanced no version 2.922.1500,argoslabs.data.excel,2.922.1500,1,1
+UnKnown Plugin,argoslabs.ai.translate,1.1004.415,5,0
+UnKnown Plugin,argoslabs.ai.translate,1.409.1513,2,0
+UnKnown Plugin,argoslabs.ai.translate,1.410.1357,3,0
+UnKnown Plugin,argoslabs.ai.tts,1.330.1500,4,0
+UnKnown Plugin,argoslabs.ai.tts,1.1009.1100,4,0
+UnKnown Plugin,argoslabs.demo.run_python_script,1.329.1855,1,0
+Python Selenium,argoslabs.web.selenium,3.128.2400,0,0
+Scrapy Basic,argoslabs.web.scrapy,2.1011.2537,0,0
+HTML Table,argoslabs.web.bsoup_table,3.329.1000,0,0
+Web Extract no version 1.522.1458,argoslabs.web.bsoup,1.522.1458,4,0
+Web Extract no version 1.603.0907,argoslabs.web.bsoup,1.603.0907,2,0
+Web Extract,argoslabs.web.bsoup,1.930.1927,2,0
+Web Extract,argoslabs.web.bsoup,1.906.1135,0,0
+Web Extract,argoslabs.web.bsoup,1.725.1834,1,0
+Web Extract,argoslabs.web.bsoup,1.603.1000,2,0
+Web Extract,argoslabs.web.bsoup,1.518.1357,0,0
+Web Extract,argoslabs.web.bsoup,1.512.2400,0,0
+Work Calendar,argoslabs.time.workalendar,1.830.2039,3,0
+TimeStamp,argoslabs.time.getts,2.410.1100,0,0
+TimeStamp,argoslabs.time.getts,1.722.1407,33,0
+SSH Command,argoslabs.terminal.sshexp,2.612.1134,0,0
+SSH Command,argoslabs.terminal.sshexp,1.415.1930,6,0
+SSH Copy,argoslabs.terminal.scp,2.412.2130,0,0
+Sys Info,argoslabs.system.psutil,3.303.3300,0,0
+Modex API,argoslabs.system.modex,3.222.1300,0,0
+Clipboard no version 2.123.900,argoslabs.system.clipboard,2.123.900,2,0
+Clipboard,argoslabs.system.clipboard,1.1004.1010,16,0
+String Manipulation,argoslabs.string.re,1.923.1818,0,0
+String Manipulation,argoslabs.string.re,1.912.1630,0,0
+String Manipulation,argoslabs.string.re,1.911.303,0,0
+String Manipulation,argoslabs.string.re,1.705.907,2,0
+String Manipulation,argoslabs.string.re,1.522.1442,4,0
+Regular Expression,argoslabs.string.re,1.516.1549,2,0
+Regular Expression,argoslabs.string.re,1.502.1700,0,0
+Password Generator,argoslabs.string.passwdgen,2.530.1712,3,0
+Telegram,argoslabs.sns.telegram,2.726.1300,1,0
+Slack,argoslabs.sns.slack,2.723.1000,1,0
+Simple-SFDC,argoslabs.sfdc.simple_salesforce,2.504.730,0,0
+Newuser-SFDC,argoslabs.sfdc.newuser,2.521.1200,0,0
+Dynamic Python,argoslabs.python.dynamic,3.403.913,0,0
+Adv Email Send no version 1.612.1812,argoslabs.office.emailsend,1.612.1812,2,0
+Adv Email Send,argoslabs.office.emailsend,2.827.2222,0,0
+Adv Email Send,argoslabs.office.emailsend,2.827.2200,0,0
+Adv Email Send,argoslabs.office.emailsend,2.824.1500,0,0
+Adv Email Send,argoslabs.office.emailsend,2.823.2020,0,0
+Email Read/Mon no version 1.620.0938,argoslabs.office.emailread,1.620.0938,1,0
+Email IMAP Read/Mon,argoslabs.office.emailread,2.823.2142,7,0
+Email IMAP Read/Mon,argoslabs.office.emailread,2.313.1430,0,0
+Email Read/Mon,argoslabs.office.emailread,1.620.938,4,0
+MS Word Extract,argoslabs.office.docxextract,2.509.1130,0,0
+Xtracta Tracking,argoslabs.ocr.xtractatrack,2.904.1400,0,0
+Xtracta Get Doc,argoslabs.ocr.xtractagetdoc,2.113.1100,0,0
+Xtracta Upload,argoslabs.ocr.xtracta,2.831.1500,0,0
+Tesseract,argoslabs.ocr.tesseract,2.322.1540,1,0
+NAVER OCR,argoslabs.naver.ocr,3.225.2200,0,0
+NAVER OCR,argoslabs.naver.ocr,2.327.1100,1,0
+MS Azure Text Analytics,argoslabs.msazure.text,2.323.1030,1,0
+Dialog Warning,argoslabs.interactive.zenity_warning,3.322.3300,0,0
+Dialog Warning,argoslabs.interactive.zenity_warning,3.322.1005,0,0
+Dialog Text Info,argoslabs.interactive.zenity_text_info,3.401.3300,0,0
+Dialog Text Info,argoslabs.interactive.zenity_text_info,3.401.1100,0,0
+Dialog Question,argoslabs.interactive.zenity_question,3.405.3300,0,0
+Dialog Question,argoslabs.interactive.zenity_question,3.401.3300,0,0
+Dialog Question,argoslabs.interactive.zenity_question,3.401.1000,0,0
+Dialog Password,argoslabs.interactive.zenity_pwd,3.322.3300,0,0
+Dialog Password,argoslabs.interactive.zenity_pwd,3.322.1100,0,0
+Dialog Info,argoslabs.interactive.zenity_info,3.402.3300,0,0
+Dialog Info,argoslabs.interactive.zenity_info,3.322.1130,0,0
+Dialog Forms,argoslabs.interactive.zenity_forms,3.402.3300,0,0
+Dialog Forms,argoslabs.interactive.zenity_forms,3.322.1200,0,0
+Dialog File Selection,argoslabs.interactive.zenity_file_select,3.403.3300,0,0
+Dialog File Selection,argoslabs.interactive.zenity_file_select,3.322.1230,0,0
+Dialog Error,argoslabs.interactive.zenity_error,3.403.3300,0,0
+Dialog Error,argoslabs.interactive.zenity_error,3.322.1300,0,0
+Dialog Text Entry,argoslabs.interactive.zenity_entry,3.402.3300,0,0
+Dialog Text Entry,argoslabs.interactive.zenity_entry,3.322.1330,0,0
+Dialog Calendar,argoslabs.interactive.zenity,3.322.3300,0,0
+Dialog Calendar,argoslabs.interactive.zenity,3.322.1400,0,0
+Drag and Drop,argoslabs.interactive.dragdrop,2.318.1125,11,0
+Drag and Drop,argoslabs.interactive.dragdrop,2.207.20,2,0
+Drag and Drop,argoslabs.interactive.dragdrop,1.1112.2205,1,0
+IBM Visual Recognition,argoslabs.ibm.visualrecog,2.305.2005,0,0
+Visual Recognition,argoslabs.ibm.visualrecog,2.128.2115,0,0
+IBM Speech to Text,argoslabs.ibm.stt,3.125.1737,0,0
+IBM Speech to Text,argoslabs.ibm.stt,2.329.1210,1,0
+IBM Speech to Text,argoslabs.ibm.stt,2.305.2010,0,0
+Google Vision API,argoslabs.google.vision,2.307.1615,4,0
+Google Vision API,argoslabs.google.vision,2.1105.800,5,0
+Google Vision API,argoslabs.google.vision,1.1031.2002,2,0
+Google TTS,argoslabs.google.tts,2.429.1110,5,0
+Google TTS,argoslabs.google.tts,2.305.2000,0,0
+Google Translate,argoslabs.google.translate,2.429.1053,1,0
+Google Translate,argoslabs.google.translate,2.305.1930,0,0
+Google Translate,argoslabs.google.translate,2.1204.930,2,0
+Google Token,argoslabs.google.googletoken,2.731.1000,0,0
+Google Token,argoslabs.google.googletoken,2.617.1830,0,0
+Google Search API no version 1.318.1141,argoslabs.google.googlesearch,1.318.1141,1,0
+Google Search API,argoslabs.google.googlesearch,3.331.1000,0,0
+Google Calandar,argoslabs.google.googlecalendar,2.814.1100,0,0
+Folder Structure,argoslabs.filesystem.subfolder,2.923.1150,0,0
+Sub Folder Trav,argoslabs.filesystem.subfolder,2.904.1510,0,0
+Folder Structure,argoslabs.filesystem.subfolder,2.1210.1127,19,0
+File Status,argoslabs.filesystem.stat,2.1118.1059,0,0
+File Status,argoslabs.filesystem.stat,2.1116.1425,1,0
+File Stat,argoslabs.filesystem.stat,2.1115.1351,0,0
+File/Folder Op no version 1.404.1449,argoslabs.filesystem.op,1.404.1449,1,0
+File/Folder Op,argoslabs.filesystem.op,1.620.1721,2,0
+File/Folder Op,argoslabs.filesystem.op,1.430.1418,15,0
+File/Folder Op,argoslabs.filesystem.op,1.418.1812,0,0
+File/Folder Op,argoslabs.filesystem.op,1.1029.2319,45,0
+File Monitor no version 2.824.1721,argoslabs.filesystem.monitor,2.824.1721,1,0
+File Monitor no version 1.408.1133,argoslabs.filesystem.monitor,1.408.1133,2,0
+File Monitor,argoslabs.filesystem.monitor,2.413.1017,1,0
+Folder Monitor,argoslabs.filesystem.monitor,2.1118.1054,1,0
+Folder Monitor,argoslabs.filesystem.monitor,2.1115.1247,69,0
+File Monitor,argoslabs.filesystem.monitor,1.424.1142,16,0
+File/Folder Exists,argoslabs.filesystem.exists,3.308.3300,0,0
+File Append,argoslabs.filesystem.append,1.1202.2000,0,0
+Zip/Unzip,argoslabs.file.zipunzip,2.819.1218,3,0
+Zip/Unzip,argoslabs.file.zipunzip,2.804.1650,0,0
+Zip/Unzip,argoslabs.file.zipunzip,2.1211.1216,0,0
+Screen Snipping,argoslabs.file.snippingtool,2.1027.1300,0,0
+Screen Snipping,argoslabs.file.snippingtool,2.1023.1300,0,0
+Convert Image,argoslabs.file.imgconv,3.113.908,0,0
+Regression,argoslabs.datanalysis.regression,2.916.1700,0,0
+Regression,argoslabs.datanalysis.regression,2.605.1100,0,0
+pandas profiling,argoslabs.datanalysis.pandasprofiling,2.507.1215,7,0
+pandas I,argoslabs.datanalysis.pandasbasic,2.809.3300,0,0
+pandas I,argoslabs.datanalysis.pandasbasic,2.429.1740,4,0
+pandas I,argoslabs.datanalysis.pandasbasic,2.427.1250,2,0
+PANDAS I,argoslabs.datanalysis.pandasbasic,2.409.1806,0,0
+pandas III,argoslabs.datanalysis.pandas3,2.915.1747,2,0
+pandas III,argoslabs.datanalysis.pandas3,2.911.1051,0,0
+pandas II,argoslabs.datanalysis.pandas2,2.911.3300,0,0
+pandas II,argoslabs.datanalysis.pandas2,2.911.1008,3,0
+XML Extract,argoslabs.data.xmlextract,2.507.3300,0,0
+XML Extract,argoslabs.data.xmlextract,2.507.1010,0,0
+PDF SplitMerge,argoslabs.data.splitpdf,2.1202.900,0,0
+PDF SplitMerge,argoslabs.data.splitpdf,2.1202.3300,0,0
+SQL no version 1.313.1857,argoslabs.data.rdb,1.313.1857,1,0
+SQL,argoslabs.data.rdb,2.228.3300,0,0
+SQL,argoslabs.data.rdb,2.227.1330,0,0
+SQL,argoslabs.data.rdb,1.509.2104,0,0
+SQL,argoslabs.data.rdb,1.502.1519,0,0
+SQL,argoslabs.data.rdb,1.1212.2200,6,0
+SQL,argoslabs.data.rdb,1.1025.250,0,0
+SQL,argoslabs.data.rdb,1.1023.540,0,0
+SQL,argoslabs.data.rdb,1.1013.1906,0,0
+PDFtoDoc,argoslabs.data.pdf2doc,2.730.3330,0,0
+PDF2Doc,argoslabs.data.pdf2doc,2.616.1130,0,0
+PDF2Doc,argoslabs.data.pdf2doc,2.1103.1000,0,0
+MongoDB,argoslabs.data.mongodb,3.215.3300,0,0
+MongoDB,argoslabs.data.mongodb,3.215.1300,0,0
+JSON Select no version 1.324.2344,argoslabs.data.json,1.324.2344,3,0
+JSON Select no version 1.404.1450,argoslabs.data.json,1.404.1450,1,0
+JSON Select,argoslabs.data.json,3.122.3300,0,0
+JSON Select,argoslabs.data.json,2.1026.1312,0,0
+JSON Select,argoslabs.data.json,1.418.1631,0,0
+JSON Select,argoslabs.data.json,1.1210.1400,3,0
+File Conv,argoslabs.data.fileconv,3.120.3300,0,0
+File Conv,argoslabs.data.fileconv,3.120.1126,0,0
+File Conv,argoslabs.data.fileconv,2.325.2000,24,0
+File Conv,argoslabs.data.fileconv,2.307.2018,1,0
+File Conv,argoslabs.data.fileconv,2.307.1903,0,0
+Data Conv,argoslabs.data.fileconv,1.916.1335,0,0
+Data Conv,argoslabs.data.fileconv,1.603.2036,1,0
+Data Conv,argoslabs.data.fileconv,1.515.1506,2,0
+CSV2TSV,argoslabs.data.fileconv,1.510.1252,0,0
+Data Conv,argoslabs.data.fileconv,1.1218.1500,4,0
+Excel Macro,argoslabs.data.excelmacro,2.428.2052,0,0
+Excel Macro,argoslabs.data.excelmacro,1.719.1838,18,0
+Excel Macro,argoslabs.data.excelmacro,1.1021.1116,2,0
+Excel Formula,argoslabs.data.excelformula,2.1007.3300,0,0
+Excel Formula,argoslabs.data.excelformula,2.1007.1100,0,0
+Excel Copy Format,argoslabs.data.excelcopy,2.923.1400,0,0
+Excel Copy Paste,argoslabs.data.excelcopy,2.1002.830,1,0
+Excel Copy Paste,argoslabs.data.excelcopy,2.1002.3300,0,0
+Excel AdvIII,argoslabs.data.exceladv3,3.326.3300,0,0
+Excel AdvIII,argoslabs.data.exceladv3,3.326.1410,0,0
+Excel AdvIII,argoslabs.data.exceladv3,2.929.1000,0,0
+Excel AdvIII,argoslabs.data.exceladv3,2.831.1200,2,0
+Excel AdvIII,argoslabs.data.exceladv3,2.721.900,0,0
+Excel AdvIII,argoslabs.data.exceladv3,2.719.900,0,0
+Excel AdvIII,argoslabs.data.exceladv3,2.716.900,0,0
+Excel AdvIII,argoslabs.data.exceladv3,2.713.900,0,0
+Excel AdvII,argoslabs.data.exceladv2,2.908.3300,0,0
+Excel AdvII,argoslabs.data.exceladv2,2.727.1100,2,0
+Excel AdvII,argoslabs.data.exceladv2,2.417.1130,3,0
+Excel AdvII,argoslabs.data.exceladv2,2.416.1700,0,0
+Excel AdvII,argoslabs.data.exceladv2,2.414.1500,0,0
+Excel Advanced no version 1.418.938,argoslabs.data.excel,1.418.938,1,0
+Excel Advanced no version 1.1021.1116,argoslabs.data.excel,1.1021.1116,1,0
+Excel Advanced no version 2.831.1200,argoslabs.data.excel,2.831.1200,1,0
+Excel Advanced no version 2.417.1130,argoslabs.data.excel,2.417.1130,3,0
+Excel Advanced no version 2.727.1100,argoslabs.data.excel,2.727.1100,2,0
+Excel Advanced no version 1.325.1359,argoslabs.data.excel,1.325.1359,2,0
+Excel Advanced,argoslabs.data.excel,2.819.926,0,0
+Excel Advanced,argoslabs.data.excel,2.805.1547,0,0
+Excel Advanced,argoslabs.data.excel,1.910.1120,8,0
+Excel Advanced,argoslabs.data.excel,1.908.2300,0,0
+Excel Advanced,argoslabs.data.excel,1.819.1500,0,0
+Excel Advanced,argoslabs.data.excel,1.425.1322,0,0
+Excel Advanced,argoslabs.data.excel,1.1218.1400,10,0
+Excel Advanced,argoslabs.data.excel,1.1120.1700,1,0
+Excel Advanced,argoslabs.data.excel,1.1113.1107,0,0
+Csv2Xlsx,argoslabs.data.csv2excel,3.223.842,0,0
+Csv2Xlsx,argoslabs.data.csv2excel,3.223.3300,0,0
+Binary Op no version 1.703.1820,argoslabs.data.binaryop,1.703.1820,1,0
+Arithmetic Op,argoslabs.data.binaryop,3.114.3300,1,0
+Arithmetic Op,argoslabs.data.binaryop,1.815.1042,3,0
+Arithmetic Op,argoslabs.data.binaryop,1.722.1800,15,0
+Binary Op,argoslabs.data.binaryop,1.709.2017,12,0
+Arithmetic Op,argoslabs.data.binaryop,1.1014.937,0,0
+Bot Collabo,argoslabs.comm.redis,2.513.3300,0,0
+Bot Collabo,argoslabs.comm.redis,1.821.1020,0,0
+Codat API,argoslabs.codat.invoice,2.127.3300,0,0
+Codat API,argoslabs.codat.invoice,2.127.1000,0,0
+Svc Check,argoslabs.check.svcopen,2.515.900,1,0
+Svc Check,argoslabs.check.svcopen,2.515.3300,0,0
+Is Svc Open,argoslabs.check.svcopen,2.514.1030,0,0
+Speed Test,argoslabs.check.netspeed,2.713.3300,0,0
+Env Check,argoslabs.check.env,2.715.3300,0,0
+Env Check,argoslabs.check.env,2.713.2500,0,0
+AWS Textract,argoslabs.aws.textract,2.406.3300,0,0
+AWS Textra/Rekog,argoslabs.aws.textract,2.406.1600,1,0
+Window Op,argoslabs.argos_service_jp.window_op,3.308.1900,0,0
+Window Op,argoslabs.argos_service_jp.window_op,3.113.1930,0,0
+Text Write,argoslabs.argos_service_jp.text_write,3.325.1000,0,0
+Text Write,argoslabs.argos_service_jp.text_write,3.319.1100,0,0
+Text Read,argoslabs.argos_service_jp.text_read,3.326.1730,2,0
+QR Read,argoslabs.argos_service_jp.qr_read,2.1028.1400,0,0
+QR Read,argoslabs.argos_service_jp.qr_read,2.1028.1130,0,0
+QR Generate,argoslabs.argos_service_jp.qr_generate,2.1028.1130,0,0
+Print 2 Image,argoslabs.argos_service_jp.print2image,3.105.300,0,0
+Print 2 Image,argoslabs.argos_service_jp.print2image,3.105.1100,0,0
+Print 2 Image,argoslabs.argos_service_jp.print2image,2.1113.1600,0,0
+parsehub,argoslabs.argos_service_jp.parsehub_api,3.401.1930,0,0
+parsehub,argoslabs.argos_service_jp.parsehub_api,2.1222.1730,0,0
+JSON<->CSV,argoslabs.argos_service_jp.json_csv,3.303.1800,0,0
+Excel Newfile,argoslabs.argos_service_jp.excel_newfile,2.908.1040,2,0
+Create Newfile no version 2.904.1900,argoslabs.argos_service_jp.create_newfile,2.904.1900,2,0
+Create Newfile,argoslabs.argos_service_jp.create_newfile,2.804.1620,0,0
+Create Newfile,argoslabs.argos_service_jp.create_newfile,2.803.2040,0,0
+Create Newfile,argoslabs.argos_service_jp.create_newfile,2.731.2111,0,0
+Convert Image II,argoslabs.argos_service_jp.convert_image_2,3.113.1700,0,0
+Convert Image II,argoslabs.argos_service_jp.convert_image_2,3.113.1230,0,0
+Chatwork Notification,argoslabs.argos_service_jp.chatwork_notification,2.730.1830,0,0
+Chatwork Notification,argoslabs.argos_service_jp.chatwork_notification,1.120.1035,0,0
+Chatwork Notification,argoslabs.argos_service_jp.chatwork_notification,1.120.1034,0,0
+Rossum no version 1.327.1355,argoslabs.api.rossum,1.327.1355,4,0
+Rossum,argoslabs.api.rossum,2.319.3300,0,0
+Rossum,argoslabs.api.rossum,2.319.1249,1,0
+Rossum,argoslabs.api.rossum,1.1205.2120,0,0
+REST API,argoslabs.api.rest,2.410.2103,6,0
+REST API,argoslabs.api.rest,2.217.1415,4,0
+REST API,argoslabs.api.rest,2.1026.1520,0,0
+REST API,argoslabs.api.rest,1.709.2010,0,0
+REST API,argoslabs.api.rest,1.315.1054,1,0
+REST API,argoslabs.api.rest,1.1218.1700,0,0
+REST API,argoslabs.api.rest,1.1204.1005,0,0
+API Requests,argoslabs.api.requests,2.1231.3300,0,0
+Fairy Devices mimi AI,argoslabs.ai.mimi,2.307.3300,0,0
+Fairy Devices mimi AI,argoslabs.ai.mimi,2.307.1645,0,0
+mimi AI,argoslabs.ai.mimi,2.302.2055,0,0
+mimi AI,argoslabs.ai.mimi,2.229.2230,0,0
+AD/LDAP,argoslabs.aaa.ldap,1.1124.3300,0,0

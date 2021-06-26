@@ -1,0 +1,27 @@
+setup:
+  author: Jerry Chae
+  author_email: mcchae@argos-labs.com
+  classifiers:
+  - 'Operating System :: MacOS :: MacOS X'
+  - 'Operating System :: Microsoft :: Windows :: Windows 10'
+  - 'Operating System :: POSIX :: Linux'
+  - 'License :: Other/Proprietary License'
+  - 'Natural Language :: English'
+  - 'Programming Language :: Python :: 3.7'
+  - 'Topic :: Library'
+  - 'Topic :: ARGOS :: common'
+  - 'Topic :: Web :: Selenium'
+  description: ARGOS-LABS common library for python
+  keywords:
+  - common
+  - library
+  - selenium
+  license: ARGOS-LABS Proprietary License
+  platforms:
+  - Mac
+  - Windows
+  - Linux
+  package_data:
+    alabs.selenium: ['icon.*']
+  url: https://www.argos-labs.com
+  version: 3.601.900

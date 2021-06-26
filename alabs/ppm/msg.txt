@@ -1,0 +1,27 @@
+First Line:
+===========
+Preparing ARGOS RPA+ environment. This process may take a few minutes.
+Preparing STU and PAM or POT done.
+An ARGOS RPA+ environment was found.
+Downloading plugins. It may take a few minutes. Private plugins could take more.
+Installing Python 3. It may take some time.
+Preparing STU and PAM or POT. Please wait.
+
+Second Line:
+===========
+Error: to connect "https://api-chief.argos-labs.com/chief/repositories"
+Starting plugin %s command
+Preparing running environment
+Getting the information of plugins
+Getting versions of plugin
+Getting the specification of plugins
+get offcial repository
+get trusted host
+get private repository
+submit to upload server user's plugin candidate
+upload user's plugin to private repository
+
+Third Line:
+===========
+Getting specification for plugin %s with version %s
+Getting %d plugins for the user

@@ -1,0 +1,6 @@
+---
+merge_icons:
+  - name: car
+    color: "#6a76f6"
+    size: 30
+    localte: center
