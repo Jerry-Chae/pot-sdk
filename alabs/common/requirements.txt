@@ -1,4 +1,7 @@
 # pip dependent packages
 
+# 2021/07/15: add missing chardet
+chardet
+
 PyYAML>=3.13
 requests>=2.21.0

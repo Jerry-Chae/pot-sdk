@@ -17,6 +17,12 @@
 #
 # 다음과 같은 작업 사항이 있었습니다:
 #
+#  * [2021/07/21]
+#     - 'base64' input_method를 넣었으나 해당 기능이 enable 되지 않은 PAM에서
+#       사용할 경우의 디코딩 부분을 위한 함수 마련
+#  * [2021/07/07]
+#     - get_pip_version 에서 3.0103.0222 => 3.103.222 로 0 제거
+#       get_safe_version and get_meta_info
 #  * [2020/10/21]
 #     - get_meta_info
 #     - --dumpspec 에서 해당 모듈에 dumpspec.json 이 있으면 해당 내용으로
@@ -82,6 +88,10 @@ class ArgsExit(Exception):
 ################################################################################
 class ArgsError(Exception):
     pass
+
+
+################################################################################
+G_VV_DECODE_ERROR = False
 
 
 ################################################################################
@@ -738,6 +748,18 @@ def str2bool(v):
 
 
 ################################################################################
+def get_safe_version(v):
+    if not v:
+        return v
+    veles = v.split('.')
+    for i in range(len(veles)):
+        if veles[i] == '0':
+            continue
+        veles[i] = veles[i].lstrip('0')
+    return '.'.join(veles)
+
+
+################################################################################
 # noinspection PyProtectedMember,PyUnresolvedReferences,PyUnresolvedReferences
 def get_all_pip_version():
     try:
@@ -751,9 +773,9 @@ def get_all_pip_version():
         # print(p)
         eles = p.split('==')
         if len(eles) == 2:
-            rd[eles[0]] = eles[1]
+            rd[eles[0]] = get_safe_version(eles[1])
         else:
-            rd[eles[0]] = '0.0.0'
+            rd[eles[0]] = get_safe_version('0.0.0')
     return rd
 
 
@@ -769,7 +791,8 @@ def get_pip_version(modname):
                 yd = yaml_load(ifp, Loader=yaml.FullLoader)
             else:
                 yd = yaml_load(ifp)
-            return yd.get('setup', {}).get('version', None)
+            rv = yd.get('setup', {}).get('version', None)
+            return get_safe_version(rv)
     _d = get_all_pip_version()
     if modname not in _d:
         return None
@@ -788,12 +811,56 @@ def get_meta_info(modname):
                 yd = yaml_load(ifp, Loader=yaml.FullLoader)
             else:
                 yd = yaml_load(ifp)
-            return yd.get('setup', None)
+            rd = yd.get('setup', None)
+            if 'version' in rd:
+                rd['version'] = get_safe_version(rd['version'])
+            return rd
     return None
 
 
 ################################################################################
+def vv_base64_encode(s):
+    s_base64 = base64.b64encode(s.encode('utf-8'))
+    rs = s_base64.decode('ascii')
+    return rs
+
+
+################################################################################
+# noinspection PyBroadException
+def vv_base64_decode(s):
+    # 먼저 decode를 시도하고 실패하면 다시 원래 문자열 return
+    global G_VV_DECODE_ERROR
+    try:
+        # 한번 실패하면, 지원안하는 이전 버전의 PAM 이라 가정하고 그 다음부터는 decodeing 안함
+        if G_VV_DECODE_ERROR:
+            return s
+        rs = base64.b64decode(s).decode('utf-8')
+        return rs
+    except Exception:
+        G_VV_DECODE_ERROR = True
+        return s
+
+
+################################################################################
 if __name__ == '__main__':
-    d = get_all_pip_version()
-    print(d)
-    print(get_pip_version('alabs.common'))
+    # d = get_all_pip_version()
+    # print(d)
+    # print(get_pip_version('alabs.common'))
+
+    # Base64
+    # origin : 123456  =>  base64 : MTIzNDU2
+    # origin : ABCDEF  =>  base64 : QUJDREVG
+    # origin : 123ABCDEF456  =>  base64 : MTIzQUJDREVGNDU2
+    # origin : 123ABCDEFABCDEFABCDEF456  =>  base64 : MTIzQUJDREVGQUJDREVGQUJDREVGNDU2
+    # origin : 12ABCDEFABCDEFABCDEF3456  =>  base64 : MTJBQkNERUZBQkNERUZBQkNERUYzNDU2
+    # origin : 1ABCDEF1313132143242343246810715781423456  =>  base64 : MUFCQ0RFRjEzMTMxMzIxNDMyNDIzNDMyNDY4MTA3MTU3ODE0MjM0NTY=
+    # origin : 12345ABCDEF313123123213126  =>  base64 : MTIzNDVBQkNERUYzMTMxMjMxMjMyMTMxMjY=
+    # origin : 123ABCDEF1312323456  =>  base64 : MTIzQUJDREVGMTMxMjMyMzQ1Ng==
+    # origin : 가나다라마바사  =>  base64 : 6rCA64KY64uk652866eI67CU7IKs
+    # origin : こんにちは  =>  base64 : 44GT44KT44Gr44Gh44Gv
+    assert(vv_base64_decode('MTIzNDU2') == '123456')
+    assert(vv_base64_decode(vv_base64_encode('가나다')) == '가나다')
+    assert(vv_base64_decode('44GT44KT44Gr44Gh44Gv') == 'こんにちは')
+    # 한번 실패하면, 지원안하는 이전 버전의 PAM 이라 가정하고 그 다음부터는 decodeing 안함
+    assert(vv_base64_decode('1234[5]') == '1234[5]')
+    assert(vv_base64_decode('12345') == '12345')
