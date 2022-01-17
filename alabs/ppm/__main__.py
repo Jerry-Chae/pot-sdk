@@ -16,15 +16,17 @@
 # --------
 #
 # 다음과 같은 작업 사항이 있었습니다:
+#  * [2021/11/18]
+#     -
 #  * [2018/10/31]
 #     - 본 모듈 작업 시작
 ################################################################################
 import sys
-if sys.platform == 'win32':
-    import six                  # for pyinstaller
-    import packaging            # for pyinstaller
-    import packaging.version    # for pyinstaller
-    import packaging.specifiers # for pyinstaller
+# if sys.platform == 'win32':
+#     import six                  # for pyinstaller
+#     import packaging            # for pyinstaller
+#     import packaging.version    # for pyinstaller
+#     import packaging.specifiers # for pyinstaller
 from alabs.ppm import main
 
 ################################################################################

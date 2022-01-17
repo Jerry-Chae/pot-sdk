@@ -16,6 +16,25 @@
 # --------
 #
 # 다음과 같은 작업 사항이 있었습니다:
+#  * [2022/01/12]
+#   - freeze.txt에 xxx @ file://... 과 같은 내용이 무시된 것을 넣었음
+#  * [2021/09/23]
+#   - 확인해보니 기존 STU/PAM 에서는 --plugin-index는 사용하고 있지 않았음. 제거
+#   - --alabs-ppm-host, --oauth-host 옵션 추가 [태진팀장요청]
+#  * [2021/08/02]
+#   - pyinst.bat using C:\work\py36 (Python36-32) and
+#   - use urllib3==1.25.8 for Proxy install
+#     pip install https://pypi-official.argos-labs.com/api/package/urllib3/urllib3-1.25.8-py2.py3-none-any.whl
+#     working at VEnv._upgrade_pip
+#  * [2021/07/28]
+#   - fix bug for STU's "plugin dumpspec get" command, reported by Brad
+#  * [2021/07/26]
+#   - pip install -U pip 기능 추가
+#   - %userprofile%\.alabs-ppm.yaml add addtional pip options like --cert ...
+#  * [2021/07/07]
+#   - https://pypi-official.argos-labs.com/simple
+#     <= https://pypi-official.argos-labs.com/pypi
+#   - dumpspec에서 3.0301.0910 => 3.301.910
 #  * [2021/05/27]
 #   - 암호로 다운로드하는 private repository 에 대한 pip 처리
 #  * [2021/02/06]
@@ -229,6 +248,13 @@ class TU(TestCase):
                                                         'bin',
                                                         'python')))
 
+    # ==========================================================================
+    def test_0042_upload(self):
+        # 사설 저장소에 wheel upload
+        r = _main(['--pr-user', 'mcchae@gmail.com', '--pr-user-pass', 'ghkd67vv',
+                   '--venv', 'upload'])
+        self.assertTrue(r == 0)
+
 #     # ==========================================================================
 #     def test_0045_change_apm_conf(self):
 #         with open(CONF_PATH, 'w') as ofp:
@@ -288,13 +314,6 @@ class TU(TestCase):
         except Exception as e:
             print(e)
             self.assertTrue(True)
-
-    # ==========================================================================
-    def test_0065_upload(self):
-        # 사설 저장소에 wheel upload
-        r = _main(['--pr-user', 'mcchae@gmail.com', '--pr-user-pass', 'ghkd67vv',
-                   '--venv', 'upload'])
-        self.assertTrue(r == 0)
 
     # ==========================================================================
     def test_0070_clear_all_after_upload(self):
@@ -428,19 +447,19 @@ class TU(TestCase):
         self._save_attr('vers1')
         self.assertTrue(len(TU.vers1) >= 2)
 
-    # ==========================================================================
-    def test_0395_plugin_get_all_output(self):
-        # --flush-cache 캐쉬를 지우면 오래 걸림 (특히 플러그인이 많을 경우)
-        cmd = [
-            '--plugin-index', 'https://pypi-official.argos-labs.com/pypi',
-            'plugin', 'get', '--official-only', '--without-cache',
-        ]
-        with captured_output() as (out, err):
-            r = _main(cmd)
-        self.assertTrue(r == 0)
-        stdout = out.getvalue().strip()
-        pprint(stdout)
-        self.assertTrue(stdout.find('argoslabs.data.json') > 0)
+    # # ==========================================================================
+    # def test_0395_plugin_get_all_output(self):
+    #     # --flush-cache 캐쉬를 지우면 오래 걸림 (특히 플러그인이 많을 경우)
+    #     cmd = [
+    #         '--plugin-index', 'https://pypi-official.argos-labs.com/pypi',
+    #         'plugin', 'get', '--official-only', '--without-cache',
+    #     ]
+    #     with captured_output() as (out, err):
+    #         r = _main(cmd)
+    #     self.assertTrue(r == 0)
+    #     stdout = out.getvalue().strip()
+    #     pprint(stdout)
+    #     self.assertTrue(stdout.find('argoslabs.data.json') > 0)
 
     # ==========================================================================
     def test_0400_plugin_get_all_short_output(self):
@@ -617,6 +636,8 @@ class TU(TestCase):
                    '--outfile', jsf]
             r = _main(cmd)
             self.assertTrue(r == 0)
+            with open(jsf) as ifp:
+                print(ifp.read())
             with open(jsf) as ifp:
                 rd = json.load(ifp)
             # pprint(rd)
@@ -1583,6 +1604,203 @@ class TU(TestCase):
     #         self.assertTrue(r == 0)
     #     finally:
     #         pass
+
+    # ==========================================================================
+    def test_0900_plugin_venv_debug(self):
+        try:
+            cmd = [
+                '--pr-user', 'mcchae@gmail.com', '--pr-user-pass', 'ghkd67vv',
+                'plugin', 'venv',
+                # "https://pypi-official.argos-labs.com/api/package/pycryptodome/pycryptodome-3.10.1-cp35-abi3-win32.whl; sys_platform == 'win32'",
+                'argoslabs.data.pdf2txt'
+            ]
+            r = _main(cmd)
+            self.assertTrue(r == 0)
+        finally:
+            pass
+
+    # plugin get dumpspec argoslabs.aws.textract==3.527.1510
+    # ==========================================================================
+    def test_0910_plugin_dumpspec_debug(self):
+        try:
+            cmd = [
+                'plugin', 'get', 'dumpspec',
+                'argoslabs.aws.textract==3.527.1510'
+            ]
+            r = _main(cmd)
+            self.assertTrue(r == 0)
+        finally:
+            pass
+
+    # ==========================================================================
+    def test_0910_plugin_venv_debug_Brad(self):
+        try:
+            cmd = [
+                '--pr-user', 'mcchae@gmail.com', '--pr-user-pass', 'ghkd67vv',
+                'plugin', 'dumpspec', 'get',
+                'argoslabs.data.excelstyle==3.727.1100',
+                '--private-only',
+            ]
+            r = _main(cmd)
+            self.assertTrue(r == 0)
+        finally:
+            pass
+
+    # ==========================================================================
+    def test_0920_plugin_venv_debug_Brad(self):
+        try:
+            cmd = [
+                '--pr-user', 'mcchae@gmail.com', '--pr-user-pass', 'ghkd67vv',
+                'plugin', 'dumpspec', 'get',
+                # 'argoslabs.time.getts==2.412.3300',
+                'argoslabs.time.workalendar==2.316.3300'
+                # '--private-only',
+            ]
+            r = _main(cmd)
+            self.assertTrue(r == 0)
+        finally:
+            pass
+
+    # ==========================================================================
+    def test_0930_plugin_new_api_test(self):
+        # --pr-user, --pr-user-pass 는 더 이상 지원 안됨 : TODO
+        try:
+            # plugin dumpspec argoslabs.api.myhelloworld==1.0.1010 --private-only --user taejin.kim@vivans.net --user-auth "Bearer f04c3860-c420-4ade-9869-61371fb1a19d" --alabs-ppm-host https://pypi2-rpa.argos-labs.com/simple --oauth-host https://api2-rpa.argos-labs.com/oauth2
+            # --alabs-ppm-host https://pypi2-rpa.argos-labs.com/pypi --oauth-host https://api2-rpa.argos-labs.com/oauth2 plugin dumpspec argoslabs.data.binaryop==3.1107.1940
+            cmd = [
+                # '--pr-user', 'mcchae@gmail.com', '--pr-user-pass', 'ghkd67vv',
+                # '--alabs-ppm-host', 'https://pypi-official.argos-labs.com/simple',
+                # '--oauth-host', 'https://api-rpa.argos-labs.com/oauth2',
+                # '--alabs-ppm-host', 'https://pypi2-rpa.argos-labs.com/simple',
+                # '--oauth-host', 'https://api2-rpa.argos-labs.com/oauth2',
+                '--alabs-ppm-host', 'https://pypi2-rpa.argos-labs.com/pypi',
+                '--oauth-host', 'https://api2-rpa.argos-labs.com/oauth2',
+
+                'plugin', 'dumpspec',
+                # 'argoslabs.api.myhelloworld==1.0.1010',
+                # 'argoslabs.kmlus.free==1.0.2',
+                # 'argoslabs.data.excelstyle==3.727.1100',
+                'argoslabs.data.binaryop==3.1107.1940',
+                # '--private-only',
+                # '--user', 'taejin.kim@vivans.net',
+                # '--user-auth', "Bearer e0aea03c-e199-44e3-9c3c-fa101225ceb6",
+                # "Bearer 3bb4b41d-caf3-4bae-b4e2-966c2c20d271"
+                # "Bearer f04c3860-c420-4ade-9869-61371fb1a19d",
+            ]
+            r = _main(cmd)
+            self.assertTrue(r == 0)
+        finally:
+            pass
+
+        # alabs-ppm.exe --alabs-ppm-host https://pypi2-rpa.argos-labs.com/simple --oauth-host https://api2-rpa.argos-labs.com/oauth2 plugin dumpspec argoslabs.api.myhelloworld==1.0.1010 --private-only --user taejin.kim@vivans.net --user-auth "Bearer 3bb4b41d-caf3-4bae-b4e2-966c2c20d271"
+
+    # ==========================================================================
+    def test_0940_venv_debug_asj_csharp_ppm(self):
+        # cz 를 지정하면 아래의 문제 발생
+        # set PYTHONPATH=C:\Users\toor\.argos-rpa.venv\Python37-32\Lib\site-packages
+        os.environ['PYTHONPATH'] = r'C:\Users\toor\.argos-rpa.venv\Python37-32\Lib\site-packages'
+
+        #  모든 가상 환경 삭제
+        r = _main(['plugin', 'venv-clean'])
+        self.assertTrue(r == 0)
+
+        # 우선 argoslabs.string.re==3.721.1430 버전 설치하여 test
+        venvout = '%s%svenv.out' % (gettempdir(), os.path.sep)
+        try:
+            cmd = ['--pr-user', 'mcchae@gmail.com', '--pr-user-pass', 'ghkd67vv',
+                   'plugin', 'venv', 'argoslabs.string.re==3.721.1430',
+                   '--outfile', venvout]
+            r = _main(cmd)
+            self.assertTrue(r == 0)
+            with open(venvout, encoding='utf-8') as ifp:
+                first_venv = ifp.read()
+            self.assertTrue(first_venv)
+            freeze_f = os.path.join(first_venv, 'freeze.json')
+            self.assertTrue(os.path.exists(freeze_f))
+            with open(freeze_f) as ifp:
+                rd1 = json.load(ifp)
+            self.assertTrue('argoslabs.string.re' in rd1 and rd1['argoslabs.string.re'] == '3.721.1430')
+
+            # 두 번째 다른 버전의 string.re를 설치하면
+            cmd = ['--pr-user', 'mcchae@gmail.com', '--pr-user-pass', 'ghkd67vv',
+                   'plugin', 'venv', 'argoslabs.string.re==2.1104.3300',
+                   '--outfile', venvout]
+            r = _main(cmd)
+            self.assertTrue(r == 0)
+            with open(venvout, encoding='utf-8') as ifp:
+                second_venv = ifp.read()
+            self.assertTrue(second_venv and second_venv != first_venv)
+            freeze_f = os.path.join(second_venv, 'freeze.json')
+            self.assertTrue(os.path.exists(freeze_f))
+            with open(freeze_f) as ifp:
+                rd2 = json.load(ifp)
+            self.assertTrue('argoslabs.string.re' in rd2 and rd2['argoslabs.string.re'] == '2.1104.3300')
+
+        finally:
+            if os.path.exists(venvout):
+                os.remove(venvout)
+
+    # ==========================================================================
+    def test_0950_dynamic_python_pho_debug(self):
+        # cz 를 지정하면 아래의 문제 발생
+        # set PYTHONPATH=C:\Users\toor\.argos-rpa.venv\Python37-32\Lib\site-packages
+        os.environ['PYTHONPATH'] = r'C:\Users\toor\.argos-rpa.venv\Python37-32\Lib\site-packages'
+
+        #  모든 가상 환경 삭제
+        r = _main(['plugin', 'venv-clean'])
+        self.assertTrue(r == 0)
+
+        # 우선 argoslabs.string.re==3.721.1430 버전 설치하여 test
+        venvout = '%s%svenv.out' % (gettempdir(), os.path.sep)
+        try:
+            cmd = ['--pr-user', 'mcchae@gmail.com', '--pr-user-pass', 'ghkd67vv',
+                   'plugin', 'venv', 'argoslabs.python.dynamic',
+                   '--outfile', venvout]
+            r = _main(cmd)
+            self.assertTrue(r == 0)
+            with open(venvout, encoding='utf-8') as ifp:
+                first_venv = ifp.read()
+            self.assertTrue(first_venv)
+            freeze_f = os.path.join(first_venv, 'freeze.json')
+            self.assertTrue(os.path.exists(freeze_f))
+            with open(freeze_f) as ifp:
+                rd1 = json.load(ifp)
+            self.assertTrue('argoslabs.python.dynamic' in rd1)
+
+        finally:
+            if os.path.exists(venvout):
+                os.remove(venvout)
+
+    # ==========================================================================
+    def test_0960_dynamic_pyselenium_debug(self):
+        # cz 를 지정하면 아래의 문제 발생
+        # set PYTHONPATH=C:\Users\toor\.argos-rpa.venv\Python37-32\Lib\site-packages
+        # os.environ['PYTHONPATH'] = r'C:\Users\toor\.argos-rpa.venv\Python37-32\Lib\site-packages'
+
+        #  모든 가상 환경 삭제
+        r = _main(['plugin', 'venv-clean'])
+        self.assertTrue(r == 0)
+
+        # 우선 argoslabs.string.re==3.721.1430 버전 설치하여 test
+        venvout = '%s%svenv.out' % (gettempdir(), os.path.sep)
+        try:
+            cmd = ['--pr-user', 'mcchae@gmail.com', '--pr-user-pass', 'ghkd67vv',
+                   'plugin', 'venv', 'argoslabs.web.selenium',
+                   '--outfile', venvout]
+            r = _main(cmd)
+            self.assertTrue(r == 0)
+            with open(venvout, encoding='utf-8') as ifp:
+                first_venv = ifp.read()
+            self.assertTrue(first_venv)
+            freeze_f = os.path.join(first_venv, 'freeze.json')
+            self.assertTrue(os.path.exists(freeze_f))
+            with open(freeze_f) as ifp:
+                rd1 = json.load(ifp)
+            self.assertTrue('argoslabs.web.selenium' in rd1)
+
+        finally:
+            if os.path.exists(venvout):
+                os.remove(venvout)
 
     # ==========================================================================
     def test_9980_install_last(self):

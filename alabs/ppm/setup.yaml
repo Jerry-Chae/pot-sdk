@@ -19,7 +19,9 @@ setup:
   - rpa
   - robot
   - module
+  - plugin
   - manager
+  - ppm
   license: ARGOS-LABS Proprietary License
   platforms:
   - Mac
@@ -29,5 +31,4 @@ setup:
     alabs.ppm: ['icon.*', 'setup.yaml']
   url: https://www.argos-labs.com
   # do not start '0'
-#  version: 2.1021.1800
-  version: 3.325.2420
+  version: 4.115.1700

@@ -1,6 +1,14 @@
-# pip dependent packages
+################################################################################
+# requirements.txt for alabs.ppm
+################################################################################
 
-#alabs.common
+#  * [2021/08/02]
+#   - pyinst.bat using C:\work\py36 (Python36-32) and
+#     use urllib3==1.25.8 for Proxy install
+urllib3==1.25.8
+
+# pip dependent packages
+alabs.common
 
 # needed
 wheel
@@ -13,9 +21,9 @@ requirements-parser
 beautifulsoup4
 
 # for installer STU & PAM pakcaging
-PyInstaller
+#PyInstaller
 #pypiwin32
 
 # for pyinstaller
-six
-packaging
+#six
+#packaging

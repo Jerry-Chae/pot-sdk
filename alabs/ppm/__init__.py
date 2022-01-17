@@ -16,6 +16,44 @@
 # --------
 #
 # 다음과 같은 작업 사항이 있었습니다:
+#
+#  * [2022/01/12~15]
+#   - freeze.txt에 xxx @ file://... 과 같은 내용이 무시된 것을 넣었음
+#   - (적용안함) PYTHONPATH unset 후 sys.path의 마지막에
+#     C:\Users\toor\.argos-rpa.venv\Python37-32\Lib\site-packages 추가
+#   - ~/.argos-rpa.venv에 yyyymmdd-HHMMSS 만 가져오도록 함
+#   - VENV를 새로 만들고 pyvenv.cfg에
+#      - home을 ~\.argos-rpa.venv\Python37-32 로 지정 (그래야 sys.path 에 제대로 들어감)
+#      - include-system-site-packages = true 로 놓으면 C# 에서 호출 시 PYTHONPATH 필요없음
+#   - alabs.selenium 대신 alabslib.selenium으로 수정
+#       <== C# ppm 에서 alabs.* 모듈과 VENV 설치시 동일 alabs.* 가 문제가 생겼음
+#   - 기존 %TEMP% 에 모든 dumpspec 캐슁하는 대신 ~/.argos-rpa.venv/cache에 캐슁하도록 함
+#       <== %TEMP% 는 임의의 프로세스가 삭제하는 경우 있음
+#   - SDK 문서에 반영: (TODO)
+#     플러그인 build 시 alabs.common==x.x.x 와 같이 버전 정보를 주더라도 버전정보는 삭제
+#     <== 특정 버전을 주면 다른 플러그인 들과 충돌 발생
+#   - build 시 ~/.py.win32 폴더가 남아 있어 오류 나는 문제 해결
+#   - argoslabs.argos_service_jp.print2image 에서 3.621.1700 로 바뀌었고 dumpspec에는
+#     3.0621.1700 이 남아 있어, 이를 동일 버전으로 인식하도록 함
+#  * [2021/11/08]
+#   - 더이상 pyinstaller로 exe를 만들지 않고 C#에서 처리하도록 수정
+#  * [2021/09/23]
+#   - 확인해보니 기존 STU/PAM 에서는 --plugin-index는 사용하고 있지 않았음. 제거
+#   - --alabs-ppm-host, --oauth-host 옵션 추가 [태진팀장요청]
+#  * [2021/08/02]
+#   - pyinst.bat using C:\work\py36 (Python36-32) and
+#   - use urllib3==1.25.8 for Proxy install
+#     pip install https://pypi-official.argos-labs.com/api/package/urllib3/urllib3-1.25.8-py2.py3-none-any.whl
+#     working at VEnv._upgrade_pip
+#  * [2021/07/28]
+#   - fix bug for STU's "plugin dumpspec get" command, reported by Brad
+#  * [2021/07/26]
+#   - pip install -U pip 기능 추가
+#   - %userprofile%\.alabs-ppm.yaml add addtional pip options like --cert ...
+#  * [2021/07/07]
+#   - https://pypi-official.argos-labs.com/simple
+#     <= https://pypi-official.argos-labs.com/pypi
+#   - dumpspec에서 3.0301.0910 => 3.301.910
 #  * [2021/05/27]
 #   - 암호로 다운로드하는 private repository 에 대한 pip 처리
 #  * [2021/02/06]
@@ -147,6 +185,7 @@
 #   - 본 모듈 작업 시작
 ################################################################################
 import os
+import re
 import sys
 import ssl
 # noinspection PyPackageRequirements
@@ -163,6 +202,8 @@ import hashlib
 import chardet
 import logging
 import zipfile
+import struct
+import platform
 # noinspection PyPackageRequirements
 import requests
 import argparse
@@ -370,7 +411,7 @@ YAML_CONFIG = """# Default Service config
   LoginPageHost: https://rpa.argos-labs.com/clear.html
   UpdateUrl: http://patch-rpa.argos-labs.com/Patch/SSUpdateNew/SS.yaml
   HostAlias: RPA
-  alabsPpmHost: https://pypi-official.argos-labs.com/pypi"""
+  alabsPpmHost: https://pypi-official.argos-labs.com/simple"""
 LOG_NAME = '.argos-rpa.log'
 LOG_PATH = os.path.join(str(Path.home()), LOG_NAME)
 OUT_NAME = '.argos-rpa.out'
@@ -378,6 +419,8 @@ OUT_PATH = os.path.join(str(Path.home()), OUT_NAME)
 ERR_NAME = '.argos-rpa.err'
 ERR_PATH = os.path.join(str(Path.home()), ERR_NAME)
 pbtail_po = None
+PIPYAML_PATH = os.path.join(str(Path.home()), '.alabs-ppm.yaml')
+PIP_CHECKTS_FILE = '.alabs-pip.ts'
 
 
 ################################################################################
@@ -496,9 +539,16 @@ def ver_compare(a, b):
             return -1
         elif i >= len(b_eles):  # a='1.2.3', b='1.2' 인 경우 a > b
             return 1
-        if int(a_eles[i]) > int(b_eles[i]):
+        # 3.621.1700 == 3.0621.1700 : 앞에 0으로 시작되는 것을 제외
+        a_e = a_eles[i].lstrip('0')
+        b_e = b_eles[i].lstrip('0')
+        if not a_e:
+            a_e = '0'
+        if not b_e:
+            b_e = '0'
+        if int(a_e) > int(b_e):
             return 1
-        elif int(a_eles[i]) < int(b_eles[i]):
+        elif int(a_e) < int(b_e):
             return -1
     return 0
 
@@ -585,6 +635,37 @@ class VEnv(object):
         return 0
 
     # ==========================================================================
+    def _can_upgrade_pip(self):
+        # return False only if called again within a day
+        pcf = os.path.join(self.root, PIP_CHECKTS_FILE)
+        if not os.path.exists(pcf):
+            return True
+        try:
+            with open(pcf) as ifp:
+                dt = datetime.datetime.strptime(ifp.read(), '%Y%m%d-%H%M%S')
+                ts_diff = datetime.datetime.now() - dt
+                if ts_diff.total_seconds() >= 86400:
+                    return True
+            return False
+        except Exception:
+            return True
+
+    # ==========================================================================
+    def _upgrade_pip(self):
+        if not self._can_upgrade_pip():
+            return 0
+        r = self.venv_pip('install', '--upgrade', 'pip', donot_upgrade_pip=True)
+        self.venv_pip('install',
+            'https://pypi-official.argos-labs.com/api/package/urllib3/urllib3-1.25.8-py2.py3-none-any.whl',
+                      donot_upgrade_pip=True)
+        pcf = os.path.join(self.root, PIP_CHECKTS_FILE)
+        if not os.path.exists(os.path.dirname(pcf)):
+            os.makedirs(os.path.dirname(pcf))
+        with open(pcf, 'w') as ofp:
+            ofp.write(datetime.datetime.now().strftime('%Y%m%d-%H%M%S'))
+        return r
+
+    # ==========================================================================
     def _upgrade(self, ndx_param=None, is_common=True, is_ppm=True):
         if not any((is_common, is_ppm)):
             return 9
@@ -642,12 +723,14 @@ class VEnv(object):
             self.logger.debug('VEnv.check_venv: use=%s, py=%s' % (self.use, self.py))
             return py
 
-        if not os.path.isdir(self.root):
-            self.make_venv()
+        # if not os.path.isdir(self.root):
+        #     self.make_venv()
         if sys.platform == 'win32':
             py = os.path.abspath(os.path.join(self.root, 'Scripts', 'python.exe'))
         else:
             py = os.path.abspath(os.path.join(self.root, 'bin', 'python'))
+        if not os.path.exists(py):
+            self.make_venv()
         if not os.path.exists(py):
             msg = 'VEnv.check_venv: Cannot find python "%s"' % py
             self.logger.error(msg)
@@ -814,6 +897,12 @@ class VEnv(object):
         # self.logger.debug('venv_pip: environ[PATH]="%s"' % os.environ['PATH'])
         # self.logger.debug('venv_pip: environ[PYTHONPATH]="%s"' % os.environ['PYTHONPATH'])
 
+        # 2021.07.26 : Need to upgrade pip
+        if not ('donot_upgrade_pip' in kwargs and kwargs['donot_upgrade_pip']):
+            self._upgrade_pip()
+        if 'donot_upgrade_pip' in kwargs:
+            del kwargs['donot_upgrade_pip']
+
         # r = pipmain(list(args))
         msg_l = list(args[:2])
         if msg_l[-1].startswith('-') and len(args) > 2:
@@ -870,7 +959,7 @@ class PPM(object):
     EXCLUDE_PKGS = ('alabs.ppm', 'alabs.common', 'alabs.icon')
     # ==========================================================================
     URL_OFFPI = [   # official plugin
-        'https://pypi-official.argos-labs.com/pypi',
+        'https://pypi-official.argos-labs.com/simple',
     ]
     URL_OAUTH = [
         'https://api-rpa.argos-labs.com/oauth2',
@@ -920,9 +1009,9 @@ class PPM(object):
 
     # ==========================================================================
     def _get_URL_OFFPI(self):
-        if self.args.plugin_index:
-            if self.args.plugin_index not in self.URL_OFFPI:
-                self.URL_OFFPI.insert(0, self.args.plugin_index)
+        # if self.args.plugin_index:
+        #     if self.args.plugin_index not in self.URL_OFFPI:
+        #         self.URL_OFFPI.insert(0, self.args.plugin_index)
         if self.url_config and 'alabsPpmHost' in self.url_config and \
                 self.url_config['alabsPpmHost'] and \
                 self.url_config['alabsPpmHost'] not in self.URL_OFFPI:
@@ -966,12 +1055,12 @@ class PPM(object):
 
     # ==========================================================================
     def _get_URL_PLUGIN(self):
-        if self.args.plugin_index:
-            if self.args.plugin_index not in self.URL_OFFPI:
-                self.URL_OFFPI.insert(0, self.args.plugin_index)
+        # if self.args.plugin_index:
+        #     if self.args.plugin_index not in self.URL_OFFPI:
+        #         self.URL_OFFPI.insert(0, self.args.plugin_index)
         if self.url_config and 'alabsPpmHost' in self.url_config and \
                 self.url_config['alabsPpmHost']:
-            # 'https://pypi-official.argos-labs.com/pypi' ==>
+            # 'https://pypi-official.argos-labs.com/simple' ==>
             # 'https://pypi-official.argos-labs.com/data/plugin-static-files'
             s = self.url_config['alabsPpmHost']
             plugin_data = '/'.join(s.split('/')[:-1]) + '/data/plugin-static-files'
@@ -993,9 +1082,23 @@ class PPM(object):
         # return r1 and r2
 
     # ==========================================================================
+    def _set_config_hosts(self):
+        # 만약 --alabs-ppm-host 명령행 옵션이 선언되어 있으면 config 내용을 덮어씀
+        if self.args.alabs_ppm_host:
+            self.url_config['alabsPpmHost'] = self.args.alabs_ppm_host
+        # 만약 --oauth-host 명령행 옵션이 선언되어 있으면 config 내용을 덮어씀
+        if self.args.oauth_host:
+            self.url_config['oauthHost'] = self.args.oauth_host
+
+    # ==========================================================================
     def __init__(self, _venv, args, logger=None, sta=None):
         self.venv = _venv
         self.args = args
+        self.py_cache = os.path.join(str(Path.home()), '.argos-rpa.cache')
+        if not os.path.exists(self.py_cache):
+            os.makedirs(self.py_cache)
+            # 이전에 만들었던 VENV 삭제하고 초기화
+            self._venv_clean()
         self.url_config = {}    # %homepath%\.argos-rpa-config.yaml (yaml)
         if not os.path.exists(YAML_PATH):
             with open(YAML_PATH, 'w', encoding='utf-8') as ofp:
@@ -1009,6 +1112,7 @@ class PPM(object):
                     yd = yaml.load(ifp)
                 if yd and isinstance(yd, list):
                     self.url_config = yd[0]
+        self._set_config_hosts()
         self.config = {}
         if logger is None:
             logger = get_logger(LOG_PATH)
@@ -1030,6 +1134,13 @@ class PPM(object):
 
     # ==========================================================================
     def _get_pkgname(self):
+        # 디버깅 하다보면, _trial_temp 가 만들어지고 그 안에서 작업이 되는데
+        # 이런 경우 상위 폴더로 이동시킴
+        cwd = os.getcwd()
+        bn = os.path.basename(cwd)
+        if bn == '_trial_temp':
+            os.chdir(os.path.dirname(cwd))
+
         # alabs.demo.helloworld 패키지를 설치하려고 하면, 해당 helloworld 폴더에
         # 들어가서 ppm 을 돌림
         if not os.path.exists('__init__.py'):
@@ -1220,6 +1331,27 @@ class PPM(object):
             self.ndx_param.append(up_url)
 
     # ==========================================================================
+    def _get_extra_pip_params(self):
+        if not os.path.exists(PIPYAML_PATH):
+            return False
+        try:
+            with open(PIPYAML_PATH, encoding='utf-8') as ifp:
+                if yaml.__version__ >= '5.1':
+                    # noinspection PyUnresolvedReferences
+                    yd = yaml.load(ifp, Loader=yaml.FullLoader)
+                else:
+                    yd = yaml.load(ifp)
+            extra_params = yd['pip']['extra-params']
+            if extra_params and isinstance(extra_params, list):
+                self.ndx_param.extend(extra_params)
+                self.logger.debug(f'_get_extra_pip_params: pip/extra-params is {extra_params}')
+        except Exception as err:
+            msg = f'_get_extra_pip_params: Error: Get extra params from "{PIPYAML_PATH}"'
+            self.sta.log(StatLogger.LT_2, msg)
+            sys.stderr.write(msg)
+            self.logger.error(msg)
+
+    # ==========================================================================
     def _get_indices(self):
         self.indices = []
         self.ndx_param = []
@@ -1228,6 +1360,9 @@ class PPM(object):
         url = self._get_URL_OFFPI()
         if not url:
             raise RuntimeError('PPM._get_indices: Invalid repository.url from %s' % YAML_NAME)
+        # 만약 url 이 ~/pypi 로 끝나면 ~/simple 로 변경
+        if url.endswith('/pypi'):
+            url = url[:-4] + 'simple'
         self._append_indices(url)
         if self._is_on_premise():  # 2020
             self.ndx_param.append('--index')
@@ -1269,6 +1404,8 @@ class PPM(object):
 
             self.ndx_param.append('--trusted-host')
             self.ndx_param.append(self._get_host_from_index(url))
+
+        self._get_extra_pip_params()
         self.logger.debug('PPM._get_indices: indices=%s, ndx_param=%s' %
                           (self.indices, self.ndx_param))
         self.sta.log(StatLogger.LT_3, 'Done to get list of plugin repositories')
@@ -1341,14 +1478,14 @@ class PPM(object):
     # ==========================================================================
     # noinspection PyMethodMayBeStatic
     def _dumpspec_json_clear_cache(self):
-        glob_filter = '%s%sdumpspec-*.json' % (tempfile.gettempdir(), os.path.sep)
+        glob_filter = '%s%sdumpspec-*.json' % (self.py_cache, os.path.sep)
         for f in glob.glob(glob_filter):
             os.remove(f)
 
     # ==========================================================================
     # noinspection PyMethodMayBeStatic
     def _dumpspec_json_save(self, modname, version, jd):
-        jsfile = '%s%sdumpspec-%s-%s.json' % (tempfile.gettempdir(), os.path.sep, modname, version)
+        jsfile = '%s%sdumpspec-%s-%s.json' % (self.py_cache, os.path.sep, modname, version)
         if os.path.exists(jsfile):
             return False
         with open(jsfile, 'w', encoding='utf-8') as ofp:
@@ -1359,7 +1496,7 @@ class PPM(object):
     # ==========================================================================
     # noinspection PyMethodMayBeStatic
     def _dumpspec_json_load(self, modname, version):
-        jsfile = '%s%sdumpspec-%s-%s.json' % (tempfile.gettempdir(), os.path.sep, modname, version)
+        jsfile = '%s%sdumpspec-%s-%s.json' % (self.py_cache, os.path.sep, modname, version)
         if not os.path.exists(jsfile):
             return None
         with open(jsfile, encoding='utf-8') as ifp:
@@ -1385,7 +1522,7 @@ class PPM(object):
                      url_def_dumpspec.split('/')[-1])
         if self.ds_hash:
             ds_file = '%s%sdumpspec-all-%s.json' % \
-                      (tempfile.gettempdir(), os.path.sep, self.ds_hash)
+                      (self.py_cache, os.path.sep, self.ds_hash)
             if os.path.exists(ds_file):
                 with open(ds_file, encoding='utf-8') as ifp:
                     return json.load(ifp)
@@ -1401,7 +1538,7 @@ class PPM(object):
         enc.update(r.content)
         self.ds_hash = ds_hash2 = enc.hexdigest()
         ds_file = '%s%sdumpspec-all-%s.json' % \
-                  (tempfile.gettempdir(), os.path.sep, ds_hash2)
+                  (self.py_cache, os.path.sep, ds_hash2)
         with open(ds_file, 'w', encoding='utf-8') as ofp:
             json.dump(rj, ofp)
         return rj
@@ -1428,7 +1565,7 @@ class PPM(object):
             if self.ds_hash:
                 # 로컬 해쉬 값이 있으면 해당 값을 가져옴
                 ds_file = '%s%smod-ver-list-%s.json' % \
-                          (tempfile.gettempdir(), os.path.sep, self.ds_hash)
+                          (self.py_cache, os.path.sep, self.ds_hash)
                 if os.path.exists(ds_file):
                     with open(ds_file, encoding='utf-8') as ifp:
                         return json.load(ifp)
@@ -1446,7 +1583,7 @@ class PPM(object):
             if self.ds_hash:
                 # 로컬 해쉬 값으로 저장
                 ds_file = '%s%smod-ver-list-%s.json' % \
-                          (tempfile.gettempdir(), os.path.sep, self.ds_hash)
+                          (self.py_cache, os.path.sep, self.ds_hash)
                 with open(ds_file, 'w', encoding='utf-8') as ofp:
                     json.dump(mvl, ofp)
             return mvl
@@ -1491,11 +1628,11 @@ class PPM(object):
             if jd:
                 return jd
 
-        glob_filter = '%s%s%s-*.whl' % (tempfile.gettempdir(), os.path.sep, modname)
+        glob_filter = '%s%s%s-*.whl' % (self.py_cache, os.path.sep, modname)
         for f in glob.glob(glob_filter):
             os.remove(f)
         self.venv.venv_pip('download', mname,
-                           '--dest', tempfile.gettempdir(),
+                           '--dest', self.py_cache,
                            '--no-deps',
                            *self.ndx_param)
         mfilename = None
@@ -1624,7 +1761,7 @@ class PPM(object):
 
     # ==========================================================================
     def _download_module(self, new_venv, modname, op, version, _tmpdir):
-        _cachedir = tempfile.gettempdir()
+        _cachedir = self.py_cache
         if not (op and version):
             if modname in self.mod_ver_list:
                 op = '=='
@@ -1658,7 +1795,7 @@ class PPM(object):
     def _check_cache_download_and_install(self, new_venv, modname, op, version):
         self.logger.debug('_check_cache_download_and_install: new_venv="%s", modname="%s", op="%s", version="%s"'
                           % (new_venv.root, modname, op, version))
-        _cachedir = tempfile.gettempdir()
+        _cachedir = self.py_cache
         _tmpdir = tempfile.mkdtemp(prefix='down_install_')
         try:
             self._download_module(new_venv, modname, op, version, _tmpdir)
@@ -1681,7 +1818,7 @@ class PPM(object):
                     return r
             # whl이 아닌 경우 그대로 설치하려고 노력 : 2019.12.12
             _args = [
-                'install', modspec,
+                'install', modname,
                 *self.ndx_param
             ]
             r = new_venv.venv_pip(*_args)
@@ -1698,7 +1835,10 @@ class PPM(object):
         _modspec = {}
         with open(requirements_txt, encoding='utf-8') as ifp:
             for req in requirements.parse(ifp):
-                _modspec[req.name] = req.specs
+                if not req.name:
+                    _modspec[req.line] = None
+                else:
+                    _modspec[req.name] = req.specs
         for modname, speclist in _modspec.items():
             if speclist:
                 for op, ver in speclist:
@@ -1710,12 +1850,28 @@ class PPM(object):
         return r
 
     # ==========================================================================
+    def _set_home_pyvenv_cfg(self, new_d):
+        pyvenv_cfg_f = os.path.join(new_d, 'pyvenv.cfg')
+        if not os.path.exists(pyvenv_cfg_f):
+            return False
+        with open(pyvenv_cfg_f, 'w', encoding='utf-8') as ofp:
+            venv_root = os.path.dirname(new_d)
+            ofp.write(f'''home = {venv_root}{os.path.sep}Python37-32
+include-system-site-packages = true
+version = 3.7.3
+''')
+        return True
+
+    # ==========================================================================
     def _get_venv(self, new_d):
+        not_exists = not os.path.exists(new_d)
         _tmpdir = None
         try:
             self.args.venv = True
             new_venv = VEnv(self.args, root=new_d, logger=self.logger)
             new_venv.check_venv()
+            if not_exists:
+                self._set_home_pyvenv_cfg(new_d)
             if self.args.requirements_txt:
                 requirements_txt = self.args.requirements_txt
             else:
@@ -1734,9 +1890,17 @@ class PPM(object):
                 freeze_d = {}
                 with open(outfile, encoding='utf-8') as ifp:
                     for line in ifp:
+                        # process: argoslabs.string.re @ file:///C:/Users/toor/AppData/Local/Temp/down_install_zraisl04/argoslabs.string.re-3.721.1430-py3-none-any.whl
+                        if line.find('@ file://') > 0:
+                            eles = line.rstrip().split(' @ ')
+                            fu_eles = eles[1].split('/')
+                            ds_eles = fu_eles[-1].split('-')
+                            line = f'{ds_eles[0]}=={ds_eles[1]}'
                         eles = line.rstrip().split('==')
                         if len(eles) != 2:
-                            raise RuntimeError('PPM._get_venv: freeze must module==version but "%s"' % line.rstrip())
+                            # 2021.07.26 : Skip in case of modname @ https://...whl
+                            # raise RuntimeError('PPM._get_venv: freeze must module==version but "%s"' % line.rstrip())
+                            continue
                         freeze_d[eles[0].strip().lower()] = eles[1].strip()
                 if os.path.exists(outfile):
                     os.remove(outfile)
@@ -1783,6 +1947,8 @@ six [('==', '1.10.0')]
                 return modspec
             with open(requirements_txt, encoding='utf-8') as ifp:
                 for req in requirements.parse(ifp):
+                    if not req.name:
+                        continue
                     modspec[req.name.lower()] = req.specs
             return modspec
         finally:
@@ -1918,7 +2084,10 @@ six [('==', '1.10.0')]
         if mod not in modds:
             raise RuntimeError('Cannot get "%s" dumpspec from modds in _get_with_dumpspec' % mod)
         for ds in modds[mod]:
-            if d['version'] == ds['plugin_version']:
+            # argoslabs.argos_service_jp.print2image 에서 3.621.1700 로 바뀌었고 dumpspec에는
+            # 3.0621.1700 이 남아 있어, 이를 동일 버전으로 인식하도록 함
+            # if d['version'] == ds['plugin_version']:
+            if ver_compare(d['version'], ds['plugin_version']) == 0:
                 d['dumpspec'] = ds
                 return True
         raise RuntimeError('Cannot find "%s" dumpspec from modds in _get_with_dumpspec' % mod)
@@ -1929,10 +2098,10 @@ six [('==', '1.10.0')]
         enc = hashlib.sha256()
         enc.update(str(modlist).encode('utf-8'))
         hexd = enc.hexdigest()
-        modd_file = '%s%sdumpspec-%s.modd' % (tempfile.gettempdir(), os.path.sep, hexd)
+        modd_file = '%s%sdumpspec-%s.modd' % (self.py_cache, os.path.sep, hexd)
         if not os.path.exists(modd_file):
             return {}, {}
-        modds_file = '%s%sdumpspec-%s.modds' % (tempfile.gettempdir(), os.path.sep, hexd)
+        modds_file = '%s%sdumpspec-%s.modds' % (self.py_cache, os.path.sep, hexd)
         if not os.path.exists(modds_file):
             return {}, {}
         with open(modd_file, encoding='utf-8') as ifp:
@@ -1947,10 +2116,10 @@ six [('==', '1.10.0')]
         enc = hashlib.sha256()
         enc.update(str(modlist).encode('utf-8'))
         hexd = enc.hexdigest()
-        modd_file = '%s%sdumpspec-%s.modd' % (tempfile.gettempdir(), os.path.sep, hexd)
+        modd_file = '%s%sdumpspec-%s.modd' % (self.py_cache, os.path.sep, hexd)
         with open(modd_file, 'w', encoding='utf-8') as ofp:
             json.dump(modd, ofp)
-        modds_file = '%s%sdumpspec-%s.modds' % (tempfile.gettempdir(), os.path.sep, hexd)
+        modds_file = '%s%sdumpspec-%s.modds' % (self.py_cache, os.path.sep, hexd)
         with open(modds_file, 'w', encoding='utf-8') as ofp:
             json.dump(modds, ofp)
 
@@ -2174,6 +2343,7 @@ six [('==', '1.10.0')]
             # PAM용 환경설정 만들기
             ####################################################################
             if self.args.plugin_cmd == 'venv':
+                rec = re.compile(r'\d{8}-\d{6}')
                 self.sta.log(StatLogger.LT_2, "Preparing execution environment")
                 if not (self.args.plugin_module or self.args.requirements_txt):
                     raise RuntimeError('PPM.do_plugin: plugin-modules parameters or --requirements-txt option must be specifiyed.')
@@ -2190,7 +2360,9 @@ six [('==', '1.10.0')]
                 for f in glob.glob(glob_f):
                     if not os.path.isdir(f):
                         continue
-                    if os.path.basename(f) == 'Python37-32':
+                    bn = os.path.basename(f)
+                    if rec.match(bn) is None:
+                    # if bn == 'Python37-32':
                         continue
                     fzj = os.path.join(f, 'freeze.json')
                     if not os.path.exists(fzj):
@@ -2486,17 +2658,17 @@ six [('==', '1.10.0')]
         su_yaml_files = [
             os.path.join(os.path.dirname(__file__), 'setup.yaml'),
         ]
-        if hasattr(sys, '_MEIPASS'):
-            # noinspection PyProtectedMember
-            su_yaml_files.append(
-                os.path.join(os.path.abspath(sys._MEIPASS), 'setup.yaml'))
+        # if hasattr(sys, '_MEIPASS'):
+        #     # noinspection PyProtectedMember
+        #     su_yaml_files.append(
+        #         os.path.join(os.path.abspath(sys._MEIPASS), 'setup.yaml'))
         su_yaml_file = None
         for syf in su_yaml_files:
             if os.path.exists(syf):
                 su_yaml_file = syf
                 break
         if not su_yaml_file:
-            raise IOError('Cannot get version info from setup.yaml')
+            raise IOError(f'Cannot get version info from setup.yaml from {su_yaml_files}')
         with open(su_yaml_file, encoding='utf-8') as ifp:
             if yaml.__version__ >= '5.1':
                 # noinspection PyUnresolvedReferences
@@ -2931,6 +3103,17 @@ def my_test_suite():
 
 
 ################################################################################
+def append_safe_req(reqs, req):
+    if not req:
+        return False
+    if req.startswith('https://') or req.startswith('https://'):
+        return False
+    req = req.split(';')[0]
+    if req not in reqs:
+        reqs.append(req)
+
+
+################################################################################
 # parse_requirements() returns generator of pip.req.InstallRequirement objects
 install_reqs = parse_requirements("{requirements_txt}", session=PipSession())
 #reqs = [str(ir.req) for ir in install_reqs]
@@ -2942,7 +3125,7 @@ for ir in install_reqs:
         req = ir.requirement
     else:
         raise LookupError('Cannot get requirement')
-    reqs.append(str(req))
+    append_safe_req(reqs, str(req))
 reqs.extend({install_requires})
 
 setup(
@@ -3071,50 +3254,51 @@ if __name__ == "__main__":
 
 
 ################################################################################
-def start_pbtail(g_dir):
-    if sys.platform != 'win32':
-        return False
-    exe_f = g_dir + r'\Release\argos-pbtail.exe'
-    if not os.path.exists(exe_f):
+def start_pbtail(argos_pbtail_exe):
+    if not (argos_pbtail_exe and os.path.exists(argos_pbtail_exe)):
         return False
     global pbtail_po
-    pbtail_po = subprocess.Popen([exe_f])
+    pbtail_po = subprocess.Popen([argos_pbtail_exe])
     return True
 
 
 ################################################################################
 # noinspection PyUnresolvedReferences,PyProtectedMember
-def ppm_exe_init(sta):
+def ppm_exe_init(sta, argos_pbtail_exe):
     tmpdir = None
     try:
-        g_dir = os.path.abspath(sys._MEIPASS)
+        # g_dir = os.path.abspath(sys._MEIPASS)
         # c_dir = os.path.abspath(os.path.dirname(sys.executable))
         # argos-pbtail.exe 실행
-        start_pbtail(g_dir)
-        # 일단은 윈도우만 실행된다고 가정
-        set_venv(g_dir + r'\venv')
+        start_pbtail(argos_pbtail_exe)
         # %HOME%argos-rpa.venv 에 Python37-32 에 원본 확인 및 복사
         py_root = os.path.join(str(Path.home()), '.argos-rpa.venv')
-        if not os.path.exists(py_root):
-            os.makedirs(py_root)
-        if not os.path.exists(os.path.join(py_root, 'Python37-32', 'python.exe')):
-            sta.log(StatLogger.LT_1, 'Installing Python 3. It may take some time.')
-            zip_file = os.path.join(os.path.abspath(sys._MEIPASS), 'Python37-32.zip')
-            if not os.path.exists(zip_file):
-                raise RuntimeError('Cannot find "%s"' % zip_file)
-            tmpdir = tempfile.mkdtemp(prefix='py37-32_')
-            with zipfile.ZipFile(zip_file, 'r') as zip_ref:
-                zip_ref.extractall(tmpdir)
-            if os.path.exists(os.path.join(py_root, 'Python37-32')):
-                shutil.rmtree(os.path.join(py_root, 'Python37-32'))
-            shutil.move(os.path.join(tmpdir, 'Python37-32'), py_root)
-        # g_dir\venv\pyvenv.cfg 덮어씀
-        with open(os.path.join(g_dir, 'venv', 'pyvenv.cfg'), 'w',
-                  encoding='utf-8') as ofp:
-            ofp.write('''home = %s
-include-system-site-packages = false
-version = 3.7.3
-''' % os.path.join(py_root, 'Python37-32'))
+        py37_root = os.path.join(py_root, 'Python37-32')
+#         # 일단은 윈도우만 실행된다고 가정
+#         set_venv(py37_root)
+#         if not os.path.exists(py_root):
+#             os.makedirs(py_root)
+#         if not os.path.exists(os.path.join(py_root, 'Python37-32', 'python.exe')):
+#             if not (python37_32_zip and os.path.exists(python37_32_zip)):
+#                 raise ReferenceError(f'Cannot find embeded Python37-32.zip file, please '
+#                                      f'specify valid path with --python37-32-zip option')
+#             sta.log(StatLogger.LT_1, 'Installing Python 3. It may take some time.')
+#             # zip_file = os.path.join(os.path.abspath(sys._MEIPASS), 'Python37-32.zip')
+#             zip_file = python37_32_zip
+#             if not os.path.exists(zip_file):
+#                 raise RuntimeError('Cannot find "%s"' % zip_file)
+#             tmpdir = tempfile.mkdtemp(prefix='py37-32_')
+#             with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+#                 zip_ref.extractall(tmpdir)
+#             if os.path.exists(os.path.join(py_root, 'Python37-32')):
+#                 shutil.rmtree(os.path.join(py_root, 'Python37-32'))
+#             shutil.move(os.path.join(tmpdir, 'Python37-32'), py_root)
+#         with open(os.path.join(py37_root, 'pyvenv.cfg'), 'w',
+#                   encoding='utf-8') as ofp:
+#             ofp.write('''home = %s
+# include-system-site-packages = false
+# version = 3.7.3
+# ''' % py37_root)
         return 0
     finally:
         if tmpdir and os.path.exists(tmpdir):
@@ -3122,13 +3306,43 @@ version = 3.7.3
 
 
 ################################################################################
+def check_python_version():
+    #   - PYTHONPATH unset 후 sys.path의 마지막에
+    #     C:\Users\toor\.argos-rpa.venv\Python37-32\Lib\site-packages 추가
+    # if sys.platform == 'win32':
+    #     if 'PYTHONPATH' in os.environ:
+    #         del os.environ['PYTHONPATH']
+    #     spdir = r'C:\Users\toor\.argos-rpa.venv\Python37-32\Lib\site-packages'
+    #     if os.path.exists(spdir) and spdir not in sys.path:
+    #         sys.path.append(spdir)
+
+    # >>> import struct;print( 8 * struct.calcsize("P"))
+    # 32
+    # >>> import platform
+    # >>> platform.python_version_tuple()
+    # ('3', '7', '3')
+    errmsg = 'It is needed Python interpreter version 3.7.3 32 bits.\n'
+    if sys.platform == 'win32':
+        errmsg += 'You can download https://www.python.org/ftp/python/3.7.3/python-3.7.3.exe'
+    pvt = platform.python_version_tuple()
+    archi_32_64 = 8 * struct.calcsize("P")
+    if not (pvt == ('3', '7', '3') and archi_32_64 == 32):
+        raise RuntimeError(errmsg)
+
+
+################################################################################
 def _main(argv=None):
     sta = StatLogger(is_clear=True)
     sta.log(StatLogger.LT_1, 'Preparing STU and PAM.')
-    if getattr(sys, 'frozen', False):
-        ppm_exe_init(sta)
+    # if getattr(sys, 'frozen', False):
+    #      ppm_exe_init(sta)
     cwd = os.getcwd()
+    # loglevel = logging.INFO if args.verbose <= 0 else logging.DEBUG
+    loglevel = logging.DEBUG
+    logger = get_logger(LOG_PATH, loglevel=loglevel)
+
     try:
+        check_python_version()
         # dcf = get_repository_env()
         # noinspection PyTypeChecker
         parser = ArgumentParser(
@@ -3155,8 +3369,14 @@ def _main(argv=None):
                             help="user authentication for private plugin repository command, usually this is for program")
         parser.add_argument('--on-premise', action='store_true',
                             help="If this flag is set applied to on-premise environment")
-        parser.add_argument('--plugin-index',
-                            help="Set official plugin index, default is https://pypi-official.argos-labs.com/pypi")
+        # parser.add_argument('--plugin-index',
+        #                     help="Set official plugin index, default is https://pypi-official.argos-labs.com/simple")
+        parser.add_argument('--argos-pbtail-exe',
+                            help="Show up argos-pbtail.exe status processing dialog")
+        parser.add_argument('--alabs-ppm-host',
+                            help="Set official plugin index, default is https://pypi-official.argos-labs.com/simple")
+        parser.add_argument('--oauth-host',
+                            help="Set OAuth Host URL, default is https://api-rpa.argos-labs.com/oauth2")
 
         subps = parser.add_subparsers(help='ppm command help', dest='command')
         ########################################################################
@@ -3289,6 +3509,8 @@ def _main(argv=None):
         # sys.stderr.write('<<SYS.argv="%s">>' % sys.argv)
 
         args = parser.parse_args(args=argv)
+        ppm_exe_init(sta, args.argos_pbtail_exe)
+
         setattr(args, '_cwd_', cwd)
         if args.verbose > 0:
             print(str(args).replace('Namespace', 'Arguments'))
@@ -3301,15 +3523,20 @@ def _main(argv=None):
                 os.remove(OUT_PATH)
             if os.path.exists(ERR_PATH):
                 os.remove(ERR_PATH)
-            # loglevel = logging.INFO if args.verbose <= 0 else logging.DEBUG
-            loglevel = logging.DEBUG
             try:
-                logger = get_logger(LOG_PATH, loglevel=loglevel)
                 _venv = VEnv(args, logger=logger)
                 ppm = PPM(_venv, args, logger=logger, sta=sta)
                 return ppm.do()
             finally:
                 logging.shutdown()
+    except Exception as err:
+        _exc_info = sys.exc_info()
+        _out = traceback.format_exception(*_exc_info)
+        del _exc_info
+        sta.error(''.join(_out))
+        logger.error(''.join(_out))
+        logger.error(str(err))
+        raise
     finally:
         sta.log(StatLogger.LT_1, 'Preparing STU and PAM is done.')
         global pbtail_po
@@ -3331,6 +3558,20 @@ def main(argv=None):
         _out = traceback.format_exception(*_exc_info)
         del _exc_info
         sys.stderr.write('%s\n' % ''.join(_out))
+        sys.stderr.write('%s\n' % str(err))
+        sys.stderr.write('  use -h option for more help\n')
+        sys.exit(9)
+
+
+################################################################################
+if __name__ == '__main__':
+    # sys.path 중에 '' 현재 디렉터리를 제일 나중에 찾도록 수정
+    if not sys.path[0]:
+        sys.path.reverse()
+    try:
+        _r = main(sys.argv[1:])
+        sys.exit(_r)
+    except Exception as err:
         sys.stderr.write('%s\n' % str(err))
         sys.stderr.write('  use -h option for more help\n')
         sys.exit(9)
