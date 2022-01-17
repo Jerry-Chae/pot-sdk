@@ -1,3 +1,37 @@
+"""
+====================================
+ :mod:`alabslib.selenium.tests.test_me`
+====================================
+.. moduleauthor:: Jerry Chae <mcchae@argos-labs.com>
+.. note:: ARGOS-LABS License
+
+Description
+===========
+ARGOS LABS base class to use Selenium
+"""
+# Authors
+# ===========
+#
+# * Jerry Chae
+#
+# Change Log
+# --------
+#
+#  * [2021/12/01]
+#     - for clipboard : to evoid NAVER capture, add send_keys_clipboard
+#  * [2021/04/28]
+#     - A1 Mac에서 Edge 버전 구하기
+#  * [2021/04/21]
+#     - Chrome, Edge 에 대해서 자동으로 해당 버전 링크 구하기
+#  * [2021/03/11]
+#     - Chrome 89 버전용 링크 추가
+#  * [2021/03/03]
+#     - Mac porting 시작
+#  * [2021/01/17]
+#     - get_by_xpath에 move_to_element flag 추가
+#  * [2020/12/02]
+#     - starting
+
 ################################################################################
 import os
 import sys
@@ -5,7 +39,7 @@ import traceback
 import logging
 from alabs.common.util.vvargs import ArgsError
 from unittest import TestCase
-from alabs.selenium import PySelenium
+from alabslib.selenium import PySelenium
 
 
 ################################################################################

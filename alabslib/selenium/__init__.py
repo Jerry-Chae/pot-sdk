@@ -1,6 +1,6 @@
 """
 ====================================
- :mod:`alabs.selenium`
+ :mod:`alabslib.selenium`
 ====================================
 .. moduleauthor:: Jerry Chae <mcchae@argos-labs.com>
 .. note:: ARGOS-LABS License
@@ -17,6 +17,8 @@ ARGOS LABS base class to use Selenium
 # Change Log
 # --------
 #
+#  * [2021/12/01]
+#     - for clipboard : to evoid NAVER capture, add send_keys_clipboard
 #  * [2021/04/28]
 #     - A1 Mac에서 Edge 버전 구하기
 #  * [2021/04/21]
@@ -44,6 +46,7 @@ import locale
 import logging
 import requests
 import traceback
+import pyperclip
 import subprocess
 from tempfile import gettempdir
 from zipfile import ZipFile
@@ -65,6 +68,8 @@ from selenium.webdriver.support.ui import Select
 from bs4 import BeautifulSoup
 # for Edge and EdgeOptions
 from msedge.selenium_tools import Edge, EdgeOptions
+# For Screen Capture
+from Screenshot import Screenshot_Clipping
 
 
 ################################################################################
@@ -402,6 +407,21 @@ class PySelenium(object):
         self.close()
 
     # ==========================================================================
+    @staticmethod
+    def get_safe_path(*_args):
+        if sys.platform == 'win32':
+            args = []
+            for i in range(len(_args)):
+                args.append(_args[i].replace('/', '\\'))
+        else:
+            args = _args
+        p = os.path.join(*args)
+        d = os.path.dirname(p)
+        if not os.path.exists(d):
+            os.makedirs(d)
+        return p
+
+    # ==========================================================================
     def implicitly_wait(self, imp_wait=3, after_wait=1):
         try:
             if imp_wait > 0:
@@ -452,6 +472,10 @@ class PySelenium(object):
         return e
 
     # ==========================================================================
+    def move_to_element(self, e):
+        self.driver.execute_script('arguments[0].scrollIntoView();', e)
+
+    # ==========================================================================
     def key_action(self, key=Keys.TAB, count=1):
         actions = ActionChains(self.driver)
         for _ in range(count):
@@ -476,6 +500,13 @@ class PySelenium(object):
     # ==========================================================================
     def send_keys(self, e, keys):
         e.send_keys(keys)
+
+    # ==========================================================================
+    def send_keys_clipboard(self, e, keys, timeout=1):
+        self.safe_click(e)
+        pyperclip.copy(keys)
+        self.send_keys(e, Keys.CONTROL + 'v')
+        time.sleep(timeout)
 
     # ==========================================================================
     @staticmethod
@@ -618,6 +649,14 @@ class PySelenium(object):
     # ==========================================================================
     def close_tab(self):
         self.driver.execute_script(f'window.close();')
+
+    # ==========================================================================
+    def full_screenshot(self, f):
+        obj = Screenshot_Clipping.Screenshot()
+        img_loc = obj.full_Screenshot(self.driver,
+                                      save_path=os.path.dirname(f),
+                                      image_name=os.path.basename(f))
+        return img_loc
 
     # ==========================================================================
     def start(self):

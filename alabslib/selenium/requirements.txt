@@ -15,3 +15,9 @@ beautifulsoup4
 
 # for MS Edge Options
 msedge-selenium-tools
+
+# for clipboard : to evoid NAVER capture
+pyperclip
+
+# for scrolled screen capture
+Selenium-Screenshot

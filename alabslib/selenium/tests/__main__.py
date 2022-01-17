@@ -1,6 +1,6 @@
 
 import sys
-from alabs.selenium.tests.test_me import TU
+from alabslib.selenium.tests.test_me import TU
 from unittest import TestLoader, TextTestRunner
 
 
