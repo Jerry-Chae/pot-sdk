@@ -1,7 +1,7 @@
 ---
 environment:
   virtualenv:
-    py3: 'C:\Python37-32\python.exe'
+    py3: 'C:\Python39-32\python.exe'
     dir: '{{home}}\autotest.venv'
   statdir: '{{home}}\autotest.stat'
   log: '{{home}}\autotest.log'
@@ -26,7 +26,7 @@ tests:
       - argoslabs.google.translate
       - こんにちは世界？私はTTSです?
       - --detect
-    assert_true: stdout == 'lang, confidence\r\nja, N/A\r\n'
+    assert_true: stdout == 'lang, confidence\r\nja, None'
   - plugin: argoslabs.google.translate
     name: Google Translate - translate op
     version:

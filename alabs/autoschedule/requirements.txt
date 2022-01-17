@@ -1,0 +1,10 @@
+# for util
+alabs.common
+alabs.ppm
+alabs.autotest
+
+# for scheduler : use system scheduler instead APScheduler
+# APScheduler
+
+# for conf
+PyYAML

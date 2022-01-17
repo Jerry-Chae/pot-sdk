@@ -19,7 +19,7 @@
 *.bak
 *.cache
 *.tags
-.DS_Store
+.*DS_Store
 Debug
 Release
 bin
