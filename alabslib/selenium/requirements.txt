@@ -19,5 +19,8 @@ msedge-selenium-tools
 # for clipboard : to evoid NAVER capture
 pyperclip
 
+# for PDF download : pyperclip, pyautogui
+pyautogui
+
 # for scrolled screen capture
 Selenium-Screenshot

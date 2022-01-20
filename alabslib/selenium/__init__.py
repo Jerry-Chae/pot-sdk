@@ -17,6 +17,11 @@ ARGOS LABS base class to use Selenium
 # Change Log
 # --------
 #
+#  * [2022/01/19]
+#     - pdf output: only for Chrome
+#       using pyperclip.copy(f)
+#             pyautogui.hotkey('ctrl', 'v')
+#             pyautogui.press('enter')
 #  * [2021/12/01]
 #     - for clipboard : to evoid NAVER capture, add send_keys_clipboard
 #  * [2021/04/28]
@@ -41,6 +46,7 @@ import stat
 import xlrd
 import time
 import glob
+import json
 import shutil
 import locale
 import logging
@@ -54,7 +60,7 @@ from urllib.parse import urljoin
 # for selenium
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
+# from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.common.keys import Keys
@@ -86,6 +92,7 @@ class PySelenium(object):
         # 'Firefox',
     }
     CACHE_FOLDER = os.path.join(gettempdir(), 'PySelenium.cahce')
+    PDF_FOLDER = os.path.join(CACHE_FOLDER, 'PDF_Download')
     EXP_COND = {
         'title_is': EC.title_is,
         'title_contains': EC.title_contains,
@@ -202,14 +209,42 @@ class PySelenium(object):
     # ==========================================================================
     def _get_web_driver(self, drive_f):
         if self.browser == 'Chrome':
+
+            if not os.path.exists(self.PDF_FOLDER):
+                os.makedirs(self.PDF_FOLDER)
+
+            appState = {
+                "recentDestinations": [
+                    {
+                        "id": "Save as PDF",
+                        "origin": "local"
+                    }
+                ],
+                "selectedDestinationId": "Save as PDF",
+                "version": 2,
+            }
+
+            profile = {
+                'printing.print_preview_sticky_settings.appState': json.dumps(appState),
+                'savefile.default_directory': self.PDF_FOLDER,
+                "plugins.always_open_pdf_externally": True,
+                "download.prompt_for_download": False,
+                "download.directory_upgrade": True,
+                "safebrowsing.enabled": True,
+            }
+
+            co = webdriver.ChromeOptions()
+            co.add_experimental_option('prefs', profile)
+            co.add_argument('--kiosk-printing')
+
             if not self.headless:
-                wd = webdriver.Chrome(executable_path=drive_f)
+                wd = webdriver.Chrome(executable_path=drive_f, chrome_options=co)
             else:
                 wo = webdriver.ChromeOptions()
                 wo.add_argument('headless')
                 wo.add_argument(f'window-size={self.width}x{self.height}')
                 wo.add_argument("disable-gpu")
-                wd = webdriver.Chrome(executable_path=drive_f, options=wo)
+                wd = webdriver.Chrome(executable_path=drive_f, options=wo, chrome_options=co)
             return wd
         if self.browser == 'Edge':
             # if self.platform == 'darwin' and platform.platform().find('arm64') > 0:
@@ -651,12 +686,30 @@ class PySelenium(object):
         self.driver.execute_script(f'window.close();')
 
     # ==========================================================================
-    def full_screenshot(self, f):
-        obj = Screenshot_Clipping.Screenshot()
-        img_loc = obj.full_Screenshot(self.driver,
-                                      save_path=os.path.dirname(f),
-                                      image_name=os.path.basename(f))
-        return img_loc
+    def full_screenshot(self, f, save_pdf=False):
+        if not save_pdf:
+            obj = Screenshot_Clipping.Screenshot()
+            img_loc = obj.full_Screenshot(self.driver,
+                                          save_path=os.path.dirname(f),
+                                          image_name=os.path.basename(f))
+            return img_loc
+        try:
+            if self.browser != 'Chrome':
+                raise RuntimeError(f'PDF Save functionality is only supported for Chrome Browser')
+            fn, ext = os.path.splitext(f)
+            if ext.lower() != '.pdf':
+                f = fn + '.pdf'
+            import pyautogui
+            self.driver.execute_script('window.print();')
+            time.sleep(1)
+            # 한글 입력 안되어 pyperclip 이용
+            # pyautogui.typewrite(f)
+            pyperclip.copy(f)
+            pyautogui.hotkey('ctrl', 'v')
+            pyautogui.press('enter')
+            return f
+        except Exception as err:
+            raise IOError(f'Cannot save PDF "{f}"')
 
     # ==========================================================================
     def start(self):
