@@ -615,7 +615,9 @@ class TU(TestCase):
                 if not k.startswith('argoslabs.'):
                     continue
                 self.assertTrue(k.startswith('argoslabs.'))
-                self.assertTrue(vd[0]['owner'].startswith('ARGOS'))
+                if not vd[0]['owner'].startswith('ARGOS'):
+                    r = r
+                self.assertTrue(vd[0]['owner'].startswith('ARGOS') or vd[0]['owner'] in ('Duk_Kyu_Lim',))
                 self.assertTrue('last_modify_datetime' in vd[0])
                 if isinstance(vd, list):
                     for vdi in vd:

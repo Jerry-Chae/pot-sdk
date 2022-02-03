@@ -45,3 +45,4 @@ exe
 **/installer/windows/python_pam/python/**
 .vscode*
 *.pfx
+dist

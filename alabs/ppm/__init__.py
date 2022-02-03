@@ -17,6 +17,11 @@
 #
 # 다음과 같은 작업 사항이 있었습니다:
 #
+#  * [2022/01/20]
+#   - MK Sys용 별도 alabs-ppm.py 를 분리 (frozen 부분 코맨트 막음)
+#  * [2022/01/19]
+#   - Shige와 이야기 하여 MK System Patch용 alabs-ppm.exe 를 만듦
+#   - 이후 alabs.ppm 모듈 자체를 upgrade 할 때 테스트 요!!!
 #  * [2022/01/12~15]
 #   - freeze.txt에 xxx @ file://... 과 같은 내용이 무시된 것을 넣었음
 #   - (적용안함) PYTHONPATH unset 후 sys.path의 마지막에
@@ -245,8 +250,8 @@ from email.utils import formatdate, COMMASPACE
 from alabs.common.util.vvencoding import get_file_encoding
 
 from tempfile import gettempdir
-if '%s.%s' % (sys.version_info.major, sys.version_info.minor) < '3.3':
-    raise EnvironmentError('Python Version must greater then "3.3" '
+if '%s.%s' % (sys.version_info.major, sys.version_info.minor) < '3.6':
+    raise EnvironmentError('Python Version must greater then "3.6" '
                            'which support venv')
 else:
     from urllib.parse import urlparse, quote
@@ -573,24 +578,24 @@ class ArgumentParser(argparse.ArgumentParser):
         #     raise RuntimeWarning('ArgumentParser Exit')
 
 
-################################################################################
-def set_venv(g_dir):
-    os.environ['VIRTUAL_ENV'] = g_dir
-    os.environ['PATH'] = os.path.join(g_dir, r'Scripts') + ';' + g_path
-    # sys.stderr.write('setuptools.__file__=%s\n' % setuptools.__file__)
-    # sys.stderr.write('sys.path=%s\n' % sys.path)
-    # sys.stderr.write('os.environ["PATH"]=%s\n' % os.environ['PATH'])
-    os.environ['PYTHONPATH'] = g_dir + r'\Lib\site-packages'
-    pw = os.path.join(g_dir, r'Scripts\python.exe')
-    sys.executable = pw
-    sys.path = [
-        g_dir,
-        g_dir + '\\lib\\site-packages',
-        g_dir + '\\lib\\site-packages\\win32',
-        g_dir + '\\lib\\site-packages\\win32\\lib',
-        g_dir + '\\lib\\site-packages\\Pythonwin',
-    ]
-    return True
+# ################################################################################
+# def set_venv(g_dir):
+#     os.environ['VIRTUAL_ENV'] = g_dir
+#     os.environ['PATH'] = os.path.join(g_dir, r'Scripts') + ';' + g_path
+#     # sys.stderr.write('setuptools.__file__=%s\n' % setuptools.__file__)
+#     # sys.stderr.write('sys.path=%s\n' % sys.path)
+#     # sys.stderr.write('os.environ["PATH"]=%s\n' % os.environ['PATH'])
+#     os.environ['PYTHONPATH'] = g_dir + r'\Lib\site-packages'
+#     pw = os.path.join(g_dir, r'Scripts\python.exe')
+#     sys.executable = pw
+#     sys.path = [
+#         g_dir,
+#         g_dir + '\\lib\\site-packages',
+#         g_dir + '\\lib\\site-packages\\win32',
+#         g_dir + '\\lib\\site-packages\\win32\\lib',
+#         g_dir + '\\lib\\site-packages\\Pythonwin',
+#     ]
+#     return True
 
 
 ################################################################################
@@ -616,8 +621,8 @@ class VEnv(object):
     # ==========================================================================
     def check_python(self):
         pyver = '%s.%s' % (sys.version_info.major, sys.version_info.minor)
-        if pyver < '3.3':
-            msg = 'Python Version must greater then "3.3" but "%s"' % pyver
+        if pyver < '3.6':
+            msg = 'Python Version must greater then "3.6" but "%s"' % pyver
             self.logger.error(msg)
             raise EnvironmentError(msg)
         self.logger.debug('VEnv.check_python: python version is "%s"' % pyver)
@@ -689,10 +694,10 @@ class VEnv(object):
             shutil.rmtree(self.root)
 
         self.logger.info("Now making venv %s ..." % self.root)
-        if getattr(sys, 'frozen', False):
-            shutil.copytree(os.path.join(os.path.abspath(sys._MEIPASS), 'venv'), self.root)
-            set_venv(self.root)
-            return 0
+        # if getattr(sys, 'frozen', False):
+        #     shutil.copytree(os.path.join(os.path.abspath(sys._MEIPASS), 'venv'), self.root)
+        #     set_venv(self.root)
+        #     return 0
         cmd = [
             '"%s"' % os.path.abspath(sys.executable),
             '-m',
@@ -2658,10 +2663,10 @@ six [('==', '1.10.0')]
         su_yaml_files = [
             os.path.join(os.path.dirname(__file__), 'setup.yaml'),
         ]
-        # if hasattr(sys, '_MEIPASS'):
-        #     # noinspection PyProtectedMember
-        #     su_yaml_files.append(
-        #         os.path.join(os.path.abspath(sys._MEIPASS), 'setup.yaml'))
+        if hasattr(sys, '_MEIPASS'):
+            # noinspection PyProtectedMember
+            su_yaml_files.append(
+                os.path.join(os.path.abspath(sys._MEIPASS), 'setup.yaml'))
         su_yaml_file = None
         for syf in su_yaml_files:
             if os.path.exists(syf):
@@ -2726,7 +2731,8 @@ six [('==', '1.10.0')]
             self._get_indices()
             # pypi-official의 module 및 버전 목록을 구해옴
             self.mod_ver_list = self._mod_ver_list_from_plugin()
-            if not getattr(sys, 'frozen', False) and self.args.self_upgrade:
+            # if not getattr(sys, 'frozen', False) and self.args.self_upgrade:
+            if self.args.self_upgrade:
                 is_common, is_ppm = self._can_self_upgrade()
                 # noinspection PyProtectedMember
                 self.venv._upgrade(self.ndx_param, is_common=is_common, is_ppm=is_ppm)
@@ -3254,55 +3260,12 @@ if __name__ == "__main__":
 
 
 ################################################################################
-def start_pbtail(argos_pbtail_exe):
+def opt_start_pbtail(argos_pbtail_exe):
     if not (argos_pbtail_exe and os.path.exists(argos_pbtail_exe)):
         return False
     global pbtail_po
     pbtail_po = subprocess.Popen([argos_pbtail_exe])
     return True
-
-
-################################################################################
-# noinspection PyUnresolvedReferences,PyProtectedMember
-def ppm_exe_init(sta, argos_pbtail_exe):
-    tmpdir = None
-    try:
-        # g_dir = os.path.abspath(sys._MEIPASS)
-        # c_dir = os.path.abspath(os.path.dirname(sys.executable))
-        # argos-pbtail.exe 실행
-        start_pbtail(argos_pbtail_exe)
-        # %HOME%argos-rpa.venv 에 Python37-32 에 원본 확인 및 복사
-        py_root = os.path.join(str(Path.home()), '.argos-rpa.venv')
-        py37_root = os.path.join(py_root, 'Python37-32')
-#         # 일단은 윈도우만 실행된다고 가정
-#         set_venv(py37_root)
-#         if not os.path.exists(py_root):
-#             os.makedirs(py_root)
-#         if not os.path.exists(os.path.join(py_root, 'Python37-32', 'python.exe')):
-#             if not (python37_32_zip and os.path.exists(python37_32_zip)):
-#                 raise ReferenceError(f'Cannot find embeded Python37-32.zip file, please '
-#                                      f'specify valid path with --python37-32-zip option')
-#             sta.log(StatLogger.LT_1, 'Installing Python 3. It may take some time.')
-#             # zip_file = os.path.join(os.path.abspath(sys._MEIPASS), 'Python37-32.zip')
-#             zip_file = python37_32_zip
-#             if not os.path.exists(zip_file):
-#                 raise RuntimeError('Cannot find "%s"' % zip_file)
-#             tmpdir = tempfile.mkdtemp(prefix='py37-32_')
-#             with zipfile.ZipFile(zip_file, 'r') as zip_ref:
-#                 zip_ref.extractall(tmpdir)
-#             if os.path.exists(os.path.join(py_root, 'Python37-32')):
-#                 shutil.rmtree(os.path.join(py_root, 'Python37-32'))
-#             shutil.move(os.path.join(tmpdir, 'Python37-32'), py_root)
-#         with open(os.path.join(py37_root, 'pyvenv.cfg'), 'w',
-#                   encoding='utf-8') as ofp:
-#             ofp.write('''home = %s
-# include-system-site-packages = false
-# version = 3.7.3
-# ''' % py37_root)
-        return 0
-    finally:
-        if tmpdir and os.path.exists(tmpdir):
-            shutil.rmtree(tmpdir)
 
 
 ################################################################################
@@ -3326,20 +3289,22 @@ def check_python_version():
         errmsg += 'You can download https://www.python.org/ftp/python/3.7.3/python-3.7.3.exe'
     pvt = platform.python_version_tuple()
     archi_32_64 = 8 * struct.calcsize("P")
-    if not (pvt == ('3', '7', '3') and archi_32_64 == 32):
-        raise RuntimeError(errmsg)
+    # if not getattr(sys, 'frozen', False):
+    #     if not (pvt == ('3', '7', '3') and archi_32_64 == 32):
+    #         raise RuntimeError(errmsg)
 
 
 ################################################################################
 def _main(argv=None):
-    sta = StatLogger(is_clear=True)
-    sta.log(StatLogger.LT_1, 'Preparing STU and PAM.')
-    # if getattr(sys, 'frozen', False):
-    #      ppm_exe_init(sta)
-    cwd = os.getcwd()
     # loglevel = logging.INFO if args.verbose <= 0 else logging.DEBUG
     loglevel = logging.DEBUG
     logger = get_logger(LOG_PATH, loglevel=loglevel)
+
+    sta = StatLogger(is_clear=True)
+    sta.log(StatLogger.LT_1, 'Preparing STU and PAM.')
+    # if getattr(sys, 'frozen', False):
+    #      ppm_exe_init(logger, sta)
+    cwd = os.getcwd()
 
     try:
         check_python_version()
@@ -3509,7 +3474,10 @@ def _main(argv=None):
         # sys.stderr.write('<<SYS.argv="%s">>' % sys.argv)
 
         args = parser.parse_args(args=argv)
-        ppm_exe_init(sta, args.argos_pbtail_exe)
+
+        # EXE 가 아닌 경우에만 해당 --argos-pbtail-exe 수행
+        # if not getattr(sys, 'frozen', False):
+        opt_start_pbtail(args.argos_pbtail_exe)
 
         setattr(args, '_cwd_', cwd)
         if args.verbose > 0:

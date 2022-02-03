@@ -15,8 +15,6 @@ DEL /Q/S dist
 
 REM sign.bat
 
-COPY __main__.py alabs-ppm.py
-
 REM     --onefile ^
 REM    __main__.py
 rem    --uac-admin ^
