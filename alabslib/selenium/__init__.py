@@ -17,6 +17,8 @@ ARGOS LABS base class to use Selenium
 # Change Log
 # --------
 #
+#  * [2022/02/03]
+#     - chrome_options merged into options
 #  * [2022/01/19]
 #     - pdf output: only for Chrome
 #       using pyperclip.copy(f)
@@ -232,19 +234,18 @@ class PySelenium(object):
                 "download.directory_upgrade": True,
                 "safebrowsing.enabled": True,
             }
-
-            co = webdriver.ChromeOptions()
-            co.add_experimental_option('prefs', profile)
-            co.add_argument('--kiosk-printing')
+            # chrome_options merged into options
+            wo = webdriver.ChromeOptions()
+            wo.add_experimental_option('prefs', profile)
+            wo.add_argument('--kiosk-printing')
 
             if not self.headless:
-                wd = webdriver.Chrome(executable_path=drive_f, chrome_options=co)
+                wd = webdriver.Chrome(executable_path=drive_f, options=wo)
             else:
-                wo = webdriver.ChromeOptions()
                 wo.add_argument('headless')
                 wo.add_argument(f'window-size={self.width}x{self.height}')
                 wo.add_argument("disable-gpu")
-                wd = webdriver.Chrome(executable_path=drive_f, options=wo, chrome_options=co)
+                wd = webdriver.Chrome(executable_path=drive_f, options=wo)
             return wd
         if self.browser == 'Edge':
             # if self.platform == 'darwin' and platform.platform().find('arm64') > 0:

@@ -3,8 +3,9 @@ alabs.common
 
 # for selenium
 # in case of msedge-selenium-tools
-# selenium==3.141
-selenium
+# alabs.ppm build : Errors happen for latest selenium 4.x (2022.02.03)
+#selenium
+selenium==3.141
 
 # for util
 requests
