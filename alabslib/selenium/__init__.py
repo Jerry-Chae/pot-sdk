@@ -17,6 +17,8 @@ ARGOS LABS base class to use Selenium
 # Change Log
 # --------
 #
+#  * [2022/02/22]
+#     - "profile.default_content_setting_values.automatic_downloads": 1
 #  * [2022/02/03]
 #     - chrome_options merged into options
 #  * [2022/01/19]
@@ -233,6 +235,7 @@ class PySelenium(object):
                 "download.prompt_for_download": False,
                 "download.directory_upgrade": True,
                 "safebrowsing.enabled": True,
+                "profile.default_content_setting_values.automatic_downloads": 1,
             }
             # chrome_options merged into options
             wo = webdriver.ChromeOptions()

@@ -23,5 +23,5 @@ pyperclip
 # for PDF download : pyperclip, pyautogui
 pyautogui
 
-# for scrolled screen capture
+# for scrolld screen capture
 Selenium-Screenshot
