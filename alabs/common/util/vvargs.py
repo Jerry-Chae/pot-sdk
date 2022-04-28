@@ -17,6 +17,8 @@
 #
 # 다음과 같은 작업 사항이 있었습니다:
 #
+#  * [2022/03/23]
+#     - 590 라인에서 패러미터 로그 남기던 것을 안남기게 함
 #  * [2021/07/21]
 #     - 'base64' input_method를 넣었으나 해당 기능이 enable 되지 않은 PAM에서
 #       사용할 경우의 디코딩 부분을 위한 함수 마련
@@ -586,7 +588,7 @@ class ModuleContext(ArgumentParser):
                         raise ArgsError('For Argument "%s", "%s" validatation '
                                         'error: user input is "%s" but rule is '
                                         '"%s"' % (dest, ext_att, iav, cv))
-        self.logger.info("args=%s: opened" % self.pformat_args(self._args))
+        # self.logger.info("args=%s: opened" % self.pformat_args(self._args))
         return self._args
 
     # ==========================================================================
