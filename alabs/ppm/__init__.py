@@ -17,6 +17,9 @@
 #
 # 다음과 같은 작업 사항이 있었습니다:
 #
+#  * [2022/04/27]
+#   - ASJ 일부 PC에서 VENV pip 명령등을 실행하고 결과의 utf-8 인코딩 문제 errors="ignore"
+#   - f'[version="{_ver}"] PPM.do: starting... command="{self.args.command}"' 로깅
 #  * [2022/01/20]
 #   - MK Sys용 별도 alabs-ppm.py 를 분리 (frozen 부분 코맨트 막음)
 #  * [2022/01/19]
@@ -773,7 +776,7 @@ class VEnv(object):
             cd = chardet.detect(line)
             if not (cd and 'encoding' in cd):
                 return ""
-            line = line.decode(cd['encoding']).rstrip()
+            line = line.decode(cd['encoding'], errors='ignore').rstrip()
         except Exception as err:
             self.logger.error('get_line_str: Error: %s' % str(err))
             raise
@@ -2680,13 +2683,14 @@ six [('==', '1.10.0')]
                 su_yaml = yaml.load(ifp, Loader=yaml.FullLoader)
             else:
                 su_yaml = yaml.load(ifp)
-        print('Version %s' % su_yaml['setup']['version'])
-        return 0
+        _ver = su_yaml['setup']['version']
+        return _ver
 
     # ==========================================================================
     def do(self):
         try:
-            self.logger.info('PPM.do: starting... %s' % self.args.command)
+            _ver = self.get_version()
+            self.logger.info(f'[version="{_ver}"] PPM.do: starting... command="{self.args.command}"')
             setattr(self.args, "last_only", getattr(self.args, "last_only", False))
             setattr(self.args, "official_only", getattr(self.args, "official_only", False))
             if not self.args.official_only:
@@ -2743,7 +2747,9 @@ six [('==', '1.10.0')]
             ####################################################################
             if self.args.command == 'get':
                 if self.args.get_cmd == 'version':
-                    return self.get_version()
+                    _ver = self.get_version()
+                    print(f'Version {_ver}')
+                    return 0
                 if self.args.get_cmd == 'repository':
                     self.sta.log(StatLogger.LT_2, 'Connecting offcial repository')
                     print(self.indices[0])

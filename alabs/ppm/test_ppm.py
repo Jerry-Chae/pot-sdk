@@ -1423,21 +1423,21 @@ class TU(TestCase):
     #     finally:
     #         pass
 
-    # # ==========================================================================
-    # def test_0760_stu_issue(self):
-    #     try:
-    #         cmd = [
-    #             '--self-upgrade',
-    #             'plugin', 'dumpspec',
-    #             '--official-only',
-    #             '--last-only',
-    #             '--user', 'taejin.kim@vivans.net',
-    #             '--user-auth', "Bearer fed39c5c-3b1e-402d-ab0c-035ea30bcc6c",
-    #         ]
-    #         r = _main(cmd)
-    #         self.assertTrue(r == 0)
-    #     finally:
-    #         pass
+    # ==========================================================================
+    def test_0760_stu_issue(self):
+        try:
+            cmd = [
+                '--self-upgrade',
+                'plugin', 'dumpspec',
+                '--official-only',
+                '--last-only',
+                # '--user', 'taejin.kim@vivans.net',
+                # '--user-auth', "Bearer fed39c5c-3b1e-402d-ab0c-035ea30bcc6c",
+            ]
+            r = _main(cmd)
+            self.assertTrue(r == 0)
+        finally:
+            pass
 
 #     # ==========================================================================
 #     def test_0770_remove_all_venv(self):
